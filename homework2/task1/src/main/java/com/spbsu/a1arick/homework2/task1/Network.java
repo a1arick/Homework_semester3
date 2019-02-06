@@ -8,60 +8,87 @@ import java.util.*;
 public class Network {
 
     private final Map<Integer, Computer> computers = new HashMap<>();
+    private final Map<String, OperationSystem> operationSystemMap = new HashMap<>();
     private int networkSize = 0;
     private int healthySize = 0;
     private int infectSize = 0;
+
+    /**
+     * constructor Network
+     */
+    public Network() {
+        operationSystemMap.put("Windows", OperationSystem.WINDOWS);
+        operationSystemMap.put("IOS", OperationSystem.IOS);
+        operationSystemMap.put("Android", OperationSystem.ANDROID);
+        operationSystemMap.put("Linux", OperationSystem.LINUX);
+        operationSystemMap.put("Mac_OS", OperationSystem.MAC_OS);
+    }
+
     /**
      * add computer to network
+     *
+     * @param computer computer
+     */
+    public void add(Computer computer) {
+        computers.put(computer.getId(), computer);
+        networkSize++;
+        healthySize++;
+    }
+
+    /**
+     * add computer to network
+     *
      * @param id id computer
      * @param os operation system computer
      */
     public void add(int id, String os) {
-        OperationSystem system = stringToOS(os);
-        if(system == null) return;
-        computers.put(id, new Computer(id, system));
+        if (operationSystemMap.get(os) == null) return;
+        computers.put(id, new Computer(id, operationSystemMap.get(os)));
         networkSize++;
         healthySize++;
     }
 
     /**
      * connects computers on the network
+     *
      * @param id1 id first computer
      * @param id2 id second computer
      */
     public void connect(int id1, int id2) {
         Computer computer1 = computers.get(id1);
         Computer computer2 = computers.get(id2);
-        if(computer1 != null && computer2 != null) {
+        if (computer1 != null && computer2 != null) {
             computer1.connect(computer2);
         }
     }
 
     /**
      * Infects the computer with a virus
-     * @param id id computer
+     *
+     * @param id    id computer
      * @param virus name of virus
      */
     public void infect(int id, Virus virus) {
         Computer computer = computers.get(id);
-        if(computer != null) {
+        if (computer != null) {
             dfs(computer, virus, new HashSet<>());
         }
     }
 
     /**
      * Network traversal
+     *
      * @param computer computer
-     * @param virus vitus
-     * @param used to not bypass the computer several times
+     * @param virus    vitus
+     * @param used     to not bypass the computer several times
      */
     public void dfs(Computer computer, Virus virus, Set<Computer> used) {
         if (!used.contains(computer)) {
             if (computer.infect(virus)) {
                 System.out.println("Computer " + computer.getId() + " : infected");
-                StateNetwork();
+                stateNetwork();
                 for (Computer connectedComputer : computer.getConnectedComputers()) {
-                    if(connectedComputer.canInfect(virus) && !connectedComputer.isInfected()) {
+                    if (connectedComputer.canInfect(virus) && !connectedComputer.isInfected()) {
                         dfs(connectedComputer, virus, used);
                     }
                 }
@@ -75,17 +102,14 @@ public class Network {
     /**
      * State computers in network
      */
-    private void StateNetwork() {
+    private void stateNetwork() {
         healthySize = 0;
         infectSize = 0;
         ArrayList<Integer> healthy = new ArrayList<>();
         ArrayList<Integer> infect = new ArrayList<>();
-        for (Map.Entry<Integer, Computer> computerEntry : computers.entrySet()) {
-
-        }
 
         for (Map.Entry<Integer, Computer> computerEntry : computers.entrySet()) {
-            if(computerEntry.getValue().isInfected()) infect.add(computerEntry.getKey());
+            if (computerEntry.getValue().isInfected()) infect.add(computerEntry.getKey());
             else healthy.add(computerEntry.getKey());
         }
         System.out.print("Healthy: ");
@@ -104,39 +128,43 @@ public class Network {
 
     /**
      * Return operatoin system
+     *
      * @param os operation system string
      * @return operation system
      */
     public static OperationSystem stringToOS(String os) {
-        if(os.equals("Windows")) return OperationSystem.WINDOWS;
-        if(os.equals("IOS")) return OperationSystem.IOS;
-        if(os.equals("Android")) return OperationSystem.ANDROID;
-        if(os.equals("Linux")) return OperationSystem.LINUX;
-        if(os.equals("Mac_OS")) return OperationSystem.MAC_OS;
+        if (os.equals("Windows")) return OperationSystem.WINDOWS;
+        if (os.equals("IOS")) return OperationSystem.IOS;
+        if (os.equals("Android")) return OperationSystem.ANDROID;
+        if (os.equals("Linux")) return OperationSystem.LINUX;
+        if (os.equals("Mac_OS")) return OperationSystem.MAC_OS;
         return null;
     }
 
     /**
      * return size computer in network
+     *
      * @return size computer in network
      */
-    public int size(){
+    public int size() {
         return networkSize;
     }
 
     /**
      * return size healthy computer in network
+     *
      * @return size healthy computer in network
      */
-    public int getHealthySize(){
+    public int getHealthySize() {
         return healthySize;
     }
 
     /**
      * return size infect computer in network
+     *
      * @return size infect computer in network
      */
-    public int getInfectSize(){
+    public int getInfectSize() {
         return infectSize;
     }
 }
