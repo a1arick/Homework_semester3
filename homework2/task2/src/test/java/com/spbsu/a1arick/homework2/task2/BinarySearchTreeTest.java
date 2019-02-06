@@ -35,7 +35,7 @@ public class BinarySearchTreeTest {
 
     @Test
     public void testAddAll() {
-        tree.addAll(Arrays.asList(7, 5, 6));
+        tree.addAll(Arrays.asList(6, 5, 7));
         assertEquals("(6 left:(5 left: right:) right:(7 left: right:))", tree.printTree());
     }
 
@@ -85,6 +85,19 @@ public class BinarySearchTreeTest {
         Collections.sort(list);
         List<Integer> treeList = new ArrayList<>(tree);
         assertEquals(list, treeList);
+    }
+
+    @Test
+    public void testForEach() {
+        int n = 10000;
+        for (int i = 0; i < n; i++) {
+            tree.add(i);
+        }
+        int size = 0;
+        for(Integer i : tree) {
+            size++;
+        }
+        assertEquals(n, size);
     }
 
     @Test
