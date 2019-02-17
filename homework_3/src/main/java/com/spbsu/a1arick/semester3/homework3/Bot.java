@@ -5,6 +5,9 @@ import javafx.scene.paint.Color;
 
 import java.util.Random;
 
+/**
+ * Bot tank
+ */
 public class Bot implements Tank {
     private World world;
     private double x;
@@ -18,13 +21,17 @@ public class Bot implements Tank {
     private boolean isDead = false;
     private long lastRandom;
 
-    public Bot(double x, Color color) {
+    public Bot(double x, Color color, World world) {
         this.x = x;
         this.color = color;
         dx = 0.0;
+        this.world = world;
         lastRandom = System.currentTimeMillis();
     }
-
+    /**
+     * Update position bot tank
+     * @param time time last update
+     */
     @Override
     public void update(double time) {
         if ((x >= 1000 && dx > 0) || (x <= 0 && dx < 0)) {
@@ -43,29 +50,36 @@ public class Bot implements Tank {
         Random random = new Random();
         dx = (random.nextInt(3) - 1) * world.getAcceleration();
     }
-
+    /**
+     * Draw bot tank
+     * @param graphicsContext graphicsContext where gun will be drawn
+     */
     @Override
-    public void draw(GraphicsContext gc) {
-        gc.setFill(color);
-        gc.fillRect(x - width / 2, y - height / 2, width, height);
+    public void draw(GraphicsContext graphicsContext) {
+        graphicsContext.setFill(color);
+        graphicsContext.fillRect(x - width / 2, y - height / 2, width, height);
     }
-
-    @Override
-    public void setWorld(World world) {
-        this.world = world;
-    }
-
+    /**
+     * Proximity shot and tank
+     * @param shot shot in world
+     * @return distance from tank to shot
+     */
     private double proximityShotAndTank(Shot shot) {
         return Math.abs(shot.getX() - x) + Math.abs(shot.getY() - y);
     }
-
+    /**
+     * Check life tank
+     * @param shot shot in world
+     */
     @Override
     public void checkLife(Shot shot) {
         if (proximityShotAndTank(shot) < shot.getRadius()) {
             isDead = true;
         }
     }
-
+    /**
+     * @return true if tank dead
+     */
     @Override
     public boolean isDead() {
         return isDead;
