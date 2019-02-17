@@ -3,9 +3,7 @@ package com.spbsu.a1arick.semester3.homework3;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -36,34 +34,33 @@ public class Main extends Application {
         Collection<String> codes = new LinkedHashSet<>();
 
         scene.setOnKeyPressed(event -> {
-            String code = event.getCode().toString();
-            codes.add(code);
+            codes.add(event.getCode().toString());
         });
 
         scene.setOnKeyReleased(event -> {
-            String code = event.getCode().toString();
-            codes.remove(code);
+            codes.remove(event.getCode().toString());
         });
 
+
         primaryStage.show();
-        Player tank = new Player();
         World world = new World(WIDTH, HEIGHT);
+        Player tank = new Player(world);
         world.addTank(tank);
 
-        world.addTank(new Bot(100.0, Color.BROWN));
-        world.addTank(new Bot(300.0, Color.CORAL));
-        world.addTank(new Bot(500.0, Color.GREEN));
-        world.addTank(new Bot(700.0, Color.BLUE));
-        world.addTank(new Bot(900.0, Color.YELLOW));
+        world.addTank(new Bot(100.0, Color.BROWN, world));
+        world.addTank(new Bot(300.0, Color.CORAL, world));
+        world.addTank(new Bot(500.0, Color.GREEN, world));
+        world.addTank(new Bot(700.0, Color.BLUE, world));
+        world.addTank(new Bot(900.0, Color.YELLOW, world));
 
-        final long[] lastNanoTime = {System.nanoTime()};
+        final long[] time = {System.nanoTime()};
 
         new AnimationTimer()
         {
-            public void handle(long currentNanoTime)
+            public void handle(long currentTime)
             {
-                double elapsedTime = (currentNanoTime - lastNanoTime[0]) / 1000000000.0;
-                lastNanoTime[0] = currentNanoTime;
+                double elapsedTime = (currentTime - time[0]) / 1000000000.0;
+                time[0] = currentTime;
 
                 tank.control(codes);
                 world.update(elapsedTime);
@@ -71,7 +68,6 @@ public class Main extends Application {
             }
         }.start();
     }
-
 
     public static void main(String[] args) {
         launch(args);
