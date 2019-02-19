@@ -2,49 +2,38 @@ package com.spbsu.a1arick.semester3.homework4.server;
 
 import com.spbsu.a1arick.semester3.homework4.common.ShotType;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GameModel {
     private static final int dX = 10;
     private static final int dY = 10;
 
-    private final List<Point> points;
+    private final TreeSet<Point> points;
     private final Set<ServerGameItem> shots = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private final Map<Integer, ServerGameItem> tanks = new ConcurrentHashMap<>();
 
-    public GameModel(List<Point> points) {
+    public GameModel(TreeSet<Point> points) {
         this.points = points;
     }
 
     synchronized public void move(int clientId, boolean left) {
-        try {
-            ServerGameItem tank = tanks.get(clientId);
-            if (tank != null && !tank.isDestroyed()) {
-
-
-
-
-                int x = tank.getX() + dX; // todo учитывать угол!
-                int y = tank.getY() + dY;
-                tank.setX(x);
-                tank.setY(y);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        ServerGameItem tank = tanks.get(clientId);
+        if (tank != null && !tank.isDestroyed()) {
+            int x = tank.getX() + dX; // todo учитывать угол!
+            int y = tank.getY() + dY;
+            tank.setX(x);
+            tank.setY(y);
         }
-
     }
 
     public void cannonMove(int clientId, boolean left) {
 
     }
 
-    public void makeShot(int clientId, ShotType shotType) {
-
+    synchronized public void makeShot(int clientId, ShotType shotType) {
+        ServerGameItem shot = tanks.get(clientId);
+        // приравнять shot координаты концы пушки и записать в srtTime текущее время
     }
 
     public void addTank(int clientId) {
@@ -52,24 +41,47 @@ public class GameModel {
     }
 
     synchronized public void update() {
-        try {
-            long now = System.currentTimeMillis();
-            for (ServerGameItem shot : shots) {
-                // todo вычислить новые координаты
-                shot.setX(...);
-                shot.setY(...);
+        long now = System.currentTimeMillis();
+        for (ServerGameItem shot : shots) {
 
-                for (ServerGameItem tanks : tanks.values()) {
-                    // todo если пересекаются, то удалить танк isDestroyed = true
-                }
+            int v0 = shot.getSpeed();
+            int x0 = shot.getX0();
+            int y0 = shot.getY0();
+            double sin = Math.sin(shot.getCannonAngle());
+            double cos = Math.cos(shot.getCannonAngle());
+            double deltaT =  System.nanoTime() - shot.getTime();
+            double g = 10;
+            // todo вычислить новые координаты
+            shot.setX((int) (x0 + v0*deltaT*cos));
+            shot.setY((int) (y0 - v0*deltaT*sin - 0.5 *g * deltaT*deltaT));
+            Point temp = new Point(shot.getX(), shot.getY());
+            Point floor = points.floor(temp);
+            Point ceiling = points.ceiling(temp);
+
+            int x1 = floor.getX();
+            int y1 = floor.getY();
+            int x2 = ceiling.getX();
+            int y2 = ceiling.getY();
+
+            // учесть что floor и ceiling могут быть одинаковыми
+            double left = (double) (temp.getY() - y1)/(y2 - y1);
+            double right = (double) (temp.getX() - x1)/(x2 - x1);
+
+            if(left > right){
+                // пуля над картой
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            else {
+                // пуля под или картой на линии
+            }
+
+            for (ServerGameItem tanks : tanks.values()) {
+                // todo если пересекаются, то удалить танк isDestroyed = true
+            }
         }
     }
 
 
-    public List<Point> getPoints() {
+    public TreeSet<Point> getPoints() {
         return points;
     }
 }
