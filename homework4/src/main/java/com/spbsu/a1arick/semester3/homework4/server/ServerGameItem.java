@@ -30,6 +30,11 @@ public class ServerGameItem implements GameItem {
         return type;
     }
 
+    @Override
+    public boolean isDestroyed() {
+        return false;
+    }
+
     void setX(int x) {
         this.x = x;
     }

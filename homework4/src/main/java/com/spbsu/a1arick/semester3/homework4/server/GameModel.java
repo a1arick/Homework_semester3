@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class GameModel {
     private static final int dX = 10;
@@ -17,8 +16,6 @@ public class GameModel {
     private final Set<ServerGameItem> shots = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private final Map<Integer, ServerGameItem> tanks = new ConcurrentHashMap<>();
 
-    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-
     public GameModel(List<Point> points) {
         this.points = points;
     }
@@ -27,12 +24,16 @@ public class GameModel {
         try {
             ServerGameItem tank = tanks.get(clientId);
             if (tank != null && !tank.isDestroyed()) {
+
+
+
+
                 int x = tank.getX() + dX; // todo учитывать угол!
                 int y = tank.getY() + dY;
                 tank.setX(x);
                 tank.setY(y);
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 

@@ -1,6 +1,6 @@
 package com.spbsu.a1arick.semester3.homework4.server;
 
-public class Point {
+public class Point implements Comparable<Point>{
     private final int x;
     private final int y;
 
@@ -15,5 +15,10 @@ public class Point {
 
     public int getY() {
         return y;
+    }
+
+    @Override
+    public int compareTo(Point o) {
+        return Integer.compare(x, o.getX());
     }
 }
