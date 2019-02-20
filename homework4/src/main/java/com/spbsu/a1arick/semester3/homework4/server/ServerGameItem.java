@@ -11,7 +11,9 @@ public class ServerGameItem implements GameItem {
     private int y;
     private int x0;
     private int y0;
+    private int radius;
     private double cannonAngle;
+    public boolean isDestroyed = false;
 
     public void setX0(int x0) {
         this.x0 = x0;
@@ -44,6 +46,11 @@ public class ServerGameItem implements GameItem {
     }
 
     @Override
+    public int getRadius() {
+        return radius;
+    }
+
+    @Override
     public double getTime() {
         return time;
     }
@@ -60,7 +67,7 @@ public class ServerGameItem implements GameItem {
 
     @Override
     public boolean isDestroyed() {
-        return false;
+        return isDestroyed;
     }
 
     public void setTime(double time) {

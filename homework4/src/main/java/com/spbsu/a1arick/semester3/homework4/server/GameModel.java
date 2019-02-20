@@ -2,7 +2,10 @@ package com.spbsu.a1arick.semester3.homework4.server;
 
 import com.spbsu.a1arick.semester3.homework4.common.ShotType;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GameModel {
@@ -40,42 +43,62 @@ public class GameModel {
 
     }
 
+    private Point shotNewCord(ServerGameItem shot) {
+        int v0 = shot.getSpeed();
+        int x0 = shot.getX0();
+        int y0 = shot.getY0();
+        double sin = Math.sin(shot.getCannonAngle());
+        double cos = Math.cos(shot.getCannonAngle());
+        double deltaT = System.nanoTime() - shot.getTime();
+        double g = 10;
+
+        int newX = (int) (x0 + v0 * deltaT * cos);
+        int newY = (int) (y0 - v0 * deltaT * sin - 0.5 * g * deltaT * deltaT);
+
+
+        return new Point(newX, newY);
+    }
+
+
     synchronized public void update() {
         long now = System.currentTimeMillis();
         for (ServerGameItem shot : shots) {
 
-            int v0 = shot.getSpeed();
-            int x0 = shot.getX0();
-            int y0 = shot.getY0();
-            double sin = Math.sin(shot.getCannonAngle());
-            double cos = Math.cos(shot.getCannonAngle());
-            double deltaT =  System.nanoTime() - shot.getTime();
-            double g = 10;
-            // todo вычислить новые координаты
-            shot.setX((int) (x0 + v0*deltaT*cos));
-            shot.setY((int) (y0 - v0*deltaT*sin - 0.5 *g * deltaT*deltaT));
-            Point temp = new Point(shot.getX(), shot.getY());
-            Point floor = points.floor(temp);
-            Point ceiling = points.ceiling(temp);
+            if (!shot.isDestroyed) {
+                Point newCord = shotNewCord(shot);
+                // todo вычислить новые координаты
+                shot.setX(newCord.getX());
+                shot.setY(newCord.getY());
+                Point temp = new Point(shot.getX(), shot.getY());
+                Point floor = points.floor(temp);
+                Point ceiling = points.ceiling(temp);
 
-            int x1 = floor.getX();
-            int y1 = floor.getY();
-            int x2 = ceiling.getX();
-            int y2 = ceiling.getY();
+                int x1 = floor.getX();
+                int y1 = floor.getY();
+                int x2 = ceiling.getX();
+                int y2 = ceiling.getY();
 
-            // учесть что floor и ceiling могут быть одинаковыми
-            double left = (double) (temp.getY() - y1)/(y2 - y1);
-            double right = (double) (temp.getX() - x1)/(x2 - x1);
+                // учесть что floor и ceiling могут быть одинаковыми
+                double left = (double) (temp.getY() - y1) / (y2 - y1);
+                double right = (double) (temp.getX() - x1) / (x2 - x1);
 
-            if(left > right){
-                // пуля над картой
-            }
-            else {
-                // пуля под или картой на линии
-            }
+                if (left >= right) {
+                    // пуля над картой
 
-            for (ServerGameItem tanks : tanks.values()) {
-                // todo если пересекаются, то удалить танк isDestroyed = true
+                    for (ServerGameItem tanks : tanks.values()) {
+                        // todo если пересекаются, то удалить танк isDestroyed = true
+                        if (!tanks.isDestroyed) {
+                            double dist = Math.sqrt((tanks.getX() - shot.getX()) * (tanks.getX() - shot.getX()) + (tanks.getY() - shot.getY()) * (tanks.getY() - shot.getY()));
+                            if (dist < (tanks.getRadius() + shot.getRadius()) / 2) {
+                                tanks.isDestroyed = true;
+                            }
+                        }
+                    }
+
+                    if (left == right) shot.isDestroyed = true;
+                } else {
+                    shot.isDestroyed = true;
+                }
             }
         }
     }
