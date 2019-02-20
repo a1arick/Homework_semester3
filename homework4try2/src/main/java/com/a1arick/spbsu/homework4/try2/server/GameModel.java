@@ -18,7 +18,7 @@ public class GameModel {
 
     synchronized public void move(int clientId, boolean left) {
         Tank tank = tanks.get(clientId);
-        if (tank != null && !tank.isDead) {
+        if (tank != null && !tank.isDead()) {
             int x = tank.getX() + dX; // todo учитывать угол!
             int y = tank.getY() + dY;
             tank.setX(x);
@@ -122,7 +122,7 @@ public class GameModel {
 
 
         }
-        
+
         for (Shot shot : deniedShots) {
             shots.remove(shot);
         }
