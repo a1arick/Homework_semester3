@@ -5,7 +5,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class GameModel {
     private static final int dX = 10; // ?
-    private static final int dY = 10;
+    private static final int dA = 05;
+    //private static final int dY = 10;
 
     private final TreeSet<Point> points;
     private final Set<Shot> shots = Collections.newSetFromMap(new ConcurrentHashMap<>());
@@ -16,18 +17,51 @@ public class GameModel {
     }
 
 
-    synchronized public void move(int clientId, boolean left) {
+    synchronized public void move(int clientId, int isRight) {
         Tank tank = tanks.get(clientId);
         if (tank != null && !tank.isDead()) {
-            int x = tank.getX() + dX; // todo учитывать угол!
-            int y = tank.getY() + dY;
+            int x = tank.getX() + dX * isRight; // todo учитывать угол!
+            int y = tank.getY() + getY(x);
             tank.setX(x);
             tank.setY(y);
+            tanks.remove(clientId);
+            tanks.put(clientId, tank);
         }
     }
 
-    public void cannonMove(int clientId, boolean left) {
+    private int getY(int x) {
+        Point point = new Point(x , 0);
+        Point floor = points.floor(point);
+        Point ceiling = points.ceiling(point);
 
+        if (floor.equals(ceiling)) return floor.getY();
+        else {
+            int x1 = floor.getX();
+            int y1 = floor.getY();
+            int x2 = ceiling.getX();
+            int y2 = ceiling.getY();
+
+            return ((x - x1)*(y2 - y1))/(x2 - x1) + y1;
+        }
+    }
+
+    public void cannonMove(int clientId, int isRight) {
+        Tank tank = tanks.get(clientId);
+        if (tank != null && !tank.isDead()) {
+            double angle = tank.getAngle() + dA * isRight;
+            if(angle > tank.getMaxAngle()) angle = tank.getMaxAngle();
+            if(angle < tank.getMinAngle()) angle = tank.getMinAngle();
+            tank.setAngle(angle);
+
+            int x = (int) (tank.getGunLength()*Math.cos(angle));
+            int y = - (int) (tank.getGunLength()*Math.sin(angle));
+
+            tank.setXEndGun(x);
+            tank.setYEndGun(y);
+
+            tanks.remove(clientId);
+            tanks.put(clientId, tank);
+        }
     }
 
     synchronized public void makeShot(int clientId, Shot shot) {
@@ -49,9 +83,10 @@ public class GameModel {
         tank.setX(first.getX());
         tank.setY(first.getY());
         tank.setRadius(10);
+        tank.setGunLength(...);
         tank.setAngle(...);
-        tank.setxEndGun(..);
-        tank.setyEndGun(..);
+        tank.setXEndGun(...);
+        tank.setYEndGun(...);
 
         tanks.put(clientId, tank);
     }
@@ -86,6 +121,7 @@ public class GameModel {
             Point floor = points.floor(temp);
             Point ceiling = points.ceiling(temp);
 
+
             int x1 = floor.getX();
             int y1 = floor.getY();
             int x2 = ceiling.getX();
@@ -94,6 +130,11 @@ public class GameModel {
             // учесть что floor и ceiling могут быть одинаковыми
             double left = (double) (temp.getY() - y1) / (y2 - y1);
             double right = (double) (temp.getX() - x1) / (x2 - x1);
+
+            if(floor.equals(ceiling)) {
+                left = temp.getY();
+                right =  floor.getY();
+            }
 
             if (left >= right) {
                 // пуля над картой

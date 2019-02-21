@@ -8,6 +8,25 @@ public class Tank implements ServerItem {
     private int radius;
     private double angle;
     private boolean isDead = false;
+    private int gunLength;
+    private final double maxAngle = - Math.PI / 4;
+    private final double minAngle = - 3 * Math.PI / 4;
+
+    public double getMaxAngle() {
+        return maxAngle;
+    }
+
+    public double getMinAngle() {
+        return minAngle;
+    }
+
+    public void setGunLength(int gunLength) {
+        this.gunLength = gunLength;
+    }
+
+    public int getGunLength() {
+        return gunLength;
+    }
 
     public void setXEndGun(int xEndGun) {
         this.xEndGun = xEndGun;
