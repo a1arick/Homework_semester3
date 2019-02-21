@@ -1,16 +1,17 @@
 package com.a1arick.spbsu.homework4.try2.server;
 
 public class Tank implements ServerItem {
-    private int x;
-    private int y;
-    private int xEndGun;
-    private int yEndGun;
-    private int radius;
+    private double x;
+    private double y;
+    private double radius;
     private double angle;
     private boolean isDead = false;
-    private int gunLength;
     private final double maxAngle = - Math.PI / 4;
     private final double minAngle = - 3 * Math.PI / 4;
+
+    public Tank(double radius) {
+        this.radius = radius;
+    }
 
     public double getMaxAngle() {
         return maxAngle;
@@ -20,47 +21,18 @@ public class Tank implements ServerItem {
         return minAngle;
     }
 
-    public void setGunLength(int gunLength) {
-        this.gunLength = gunLength;
-    }
-
-    public int getGunLength() {
-        return gunLength;
-    }
-
-    public void setXEndGun(int xEndGun) {
-        this.xEndGun = xEndGun;
-    }
-
-    public void setYEndGun(int yEndGun) {
-        this.yEndGun = yEndGun;
-    }
-
-    public int getXEndGun() {
-        return xEndGun;
-    }
-
-    public int getYEndGun() {
-        return yEndGun;
-    }
-
-    public void setX(int x) {
+    public void setX(double x) {
         this.x = x;
     }
 
-    public void setY(int y) {
+    public void setY(double y) {
         this.y = y;
-    }
-
-    public void setRadius(int radius) {
-        this.radius = radius;
     }
 
     public void setAngle(double angle) {
         this.angle = angle;
     }
 
-    @Override
     public void kill() {
         isDead = true;
     }
@@ -75,17 +47,17 @@ public class Tank implements ServerItem {
     }
 
     @Override
-    public int getX() {
+    public double getX() {
         return x;
     }
 
     @Override
-    public int getY() {
+    public double getY() {
         return y;
     }
 
     @Override
-    public int getRadius() {
+    public double getRadius() {
         return radius;
     }
 }
