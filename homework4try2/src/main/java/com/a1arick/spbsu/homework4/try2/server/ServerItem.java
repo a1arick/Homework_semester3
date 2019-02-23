@@ -6,4 +6,6 @@ public interface ServerItem {
     double getRadius();
     double getAngle();
     boolean isDead();
+
+    int getClientId();
 }

@@ -22,12 +22,4 @@ public class TestGameModel extends AbstractGameModel{
         this.time = time;
     }
 
-
-    @Test
-    public void test1() {
-       addTank(0);
-       addTank(1);
-
-
-    }
 }

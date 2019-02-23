@@ -50,10 +50,10 @@ public abstract class AbstractGameModel {
         }
     }
 
-    public synchronized void cannonMove(int clientId, int isRight) {
+    public synchronized void cannonMove(int clientId, boolean isRight) {
         Tank tank = tanks.get(clientId);
         if (tank != null && !tank.isDead()) {
-            double angle = tank.getAngle() + dA * isRight;
+            double angle = tank.getAngle() + dA * (isRight ? 1 : -1);
             if(angle > tank.getMaxAngle()) angle = tank.getMaxAngle();
             if(angle < tank.getMinAngle()) angle = tank.getMinAngle();
             tank.setAngle(angle);
