@@ -9,7 +9,7 @@ public class Shot implements ServerItem {
     private double x0;
     private double y0;
     private double angle;
-    private long time;
+    private double time;
     private boolean isDead = false;
     private Tank tank;
 
@@ -42,7 +42,7 @@ public class Shot implements ServerItem {
         this.angle = angle;
     }
 
-    public void setTime(long time) {
+    public void setTime(double time) {
         this.time = time;
     }
 
@@ -54,7 +54,7 @@ public class Shot implements ServerItem {
         return y0;
     }
 
-    public long getTime() {
+    public double getTime() {
         return time;
     }
     public void kill() {
@@ -88,5 +88,10 @@ public class Shot implements ServerItem {
     @Override
     public boolean isDead() {
         return isDead;
+    }
+
+    @Override
+    public int getClientId() {
+        return tank.getClientId();
     }
 }

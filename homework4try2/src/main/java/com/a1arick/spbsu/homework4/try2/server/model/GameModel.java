@@ -12,7 +12,7 @@ public class GameModel extends AbstractGameModel{
     }
 
     @Override
-    protected long getTime() {
+    protected double getTime() {
         return System.currentTimeMillis();
     }
 }

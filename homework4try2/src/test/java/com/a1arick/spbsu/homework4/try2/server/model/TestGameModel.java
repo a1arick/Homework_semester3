@@ -6,7 +6,7 @@ import org.junit.Test;
 import java.util.TreeSet;
 
 public class TestGameModel extends AbstractGameModel{
-    private long time;
+    private double time;
 
     public TestGameModel(TreeSet<Point> points) {
         super(points);
@@ -14,11 +14,11 @@ public class TestGameModel extends AbstractGameModel{
 
 
     @Override
-    protected long getTime() {
+    protected double getTime() {
         return time;
     }
 
-    public void setTime(long time) {
+    public void setTime(double time) {
         this.time = time;
     }
 
