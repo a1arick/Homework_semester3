@@ -1,6 +1,9 @@
 package com.a1arick.spbsu.homework4.try2.server.model;
 
-import com.a1arick.spbsu.homework4.try2.server.*;
+import com.a1arick.spbsu.homework4.try2.server.Point;
+import com.a1arick.spbsu.homework4.try2.server.ServerItem;
+import com.a1arick.spbsu.homework4.try2.server.Shot;
+import com.a1arick.spbsu.homework4.try2.server.Tank;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,13 +24,12 @@ public abstract class AbstractGameModel {
     protected abstract double getTime();
 
 
-
     synchronized public void move(int clientId, boolean isRight) {
         Tank tank = tanks.get(clientId);
         if (tank != null && !tank.isDead()) {
             double x = tank.getX() + dX * (isRight ? 1 : -1); // todo учитывать угол!
-            if(x > points.last().getX()) x = points.last().getX();
-            else if(x < points.first().getX()) x = points.first().getX();
+            if (x > points.last().getX()) x = points.last().getX();
+            else if (x < points.first().getX()) x = points.first().getX();
             double y = tank.getY() + getY(x);
             tank.setX(x);
             tank.setY(y);
@@ -35,6 +37,7 @@ public abstract class AbstractGameModel {
             tanks.put(clientId, tank);
         }
     }
+
     // для теста
     synchronized public void moveOnX(int clientId, double x) {
         Tank tank = tanks.get(clientId);
@@ -48,7 +51,7 @@ public abstract class AbstractGameModel {
     }
 
     private double getY(double x) {
-        Point point = new Point(x , 0);
+        Point point = new Point(x, 0);
         Point floor = points.floor(point);
         Point ceiling = points.ceiling(point);
 
@@ -59,7 +62,7 @@ public abstract class AbstractGameModel {
             double x2 = ceiling.getX();
             double y2 = ceiling.getY();
 
-            return ((x - x1)*(y2 - y1))/(x2 - x1) + y1;
+            return ((x - x1) * (y2 - y1)) / (x2 - x1) + y1;
         }
     }
 
@@ -67,8 +70,8 @@ public abstract class AbstractGameModel {
         Tank tank = tanks.get(clientId);
         if (tank != null && !tank.isDead()) {
             double angle = tank.getAngle() + dA * (isRight ? 1 : -1);
-            if(angle > tank.getMaxAngle()) angle = tank.getMaxAngle();
-            if(angle < tank.getMinAngle()) angle = tank.getMinAngle();
+            if (angle > tank.getMaxAngle()) angle = tank.getMaxAngle();
+            if (angle < tank.getMinAngle()) angle = tank.getMinAngle();
             tank.setAngle(angle);
             tanks.remove(clientId);
             tanks.put(clientId, tank);
@@ -95,7 +98,6 @@ public abstract class AbstractGameModel {
         shot.setTime(getTime());
         shot.setAngle(tank.getAngle());
         shots.add(shot);
-        // приравнять shot координаты концы пушки и записать в srtTime текущее время
     }
 
     public synchronized void addTank(int clientId) {
@@ -103,7 +105,7 @@ public abstract class AbstractGameModel {
         Tank tank = new Tank(clientId);
         tank.setX(first.getX());
         tank.setY(first.getY());
-        tank.setAngle(- 3 * Math.PI / 4);
+        tank.setAngle(-3 * Math.PI / 4);
         tanks.put(clientId, tank);
     }
 
@@ -146,34 +148,17 @@ public abstract class AbstractGameModel {
             double left = (temp.getY() - y1) / (y2 - y1);
             double right = (temp.getX() - x1) / (x2 - x1);
 
-            if(floor.equals(ceiling)) {
+            if (floor.equals(ceiling)) {
                 left = temp.getY();
-                right =  floor.getY();
+                right = floor.getY();
             }
 
-            if(y2 - y1 == 0) {
-               right = y2;
-               left = temp.getY();
+            if (y2 - y1 == 0) {
+                right = y2;
+                left = temp.getY();
             }
 
-            /*if (left >= right && shot.getTime() != now) {
-                // пуля над картой
-                for (Tank tank : tanks.values()) {
-                    if (!tank.isDead() && !shot.getTank().equals(tank)) {
-                        double dist = Math.sqrt((tank.getX() - shot.getX()) * (tank.getX() - shot.getX()) + (tank.getY() - shot.getY()) * (tank.getY() - shot.getY()));
-                        if (dist < shot.getRadius()) {
-                            tank.kill();
-                        }
-                    }
-                }
-
-
-            } else if(right > left){
-                shot.kill();
-                deniedShots.add(shot);
-            }*/
-
-            if(right > left) { // пуля за картой
+            if (right > left) { // пуля за картой
                 for (Tank tank : tanks.values()) {
                     if (!tank.isDead() && !shot.getTank().equals(tank)) {
                         double dist = Math.sqrt((tank.getX() - shot.getX()) * (tank.getX() - shot.getX()) + (tank.getY() - shot.getY()) * (tank.getY() - shot.getY()));
