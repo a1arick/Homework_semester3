@@ -2,7 +2,9 @@ package com.a1arick.spbsu.homework4.try2.server;
 
 import com.a1arick.spbsu.homework4.try2.server.model.ShotType;
 
-public class Shot implements ServerItem {
+import java.io.Serializable;
+
+public class Shot implements ServerItem, Serializable {
     private ShotType type;
     private double x;
     private double y;

@@ -1,8 +1,9 @@
 package com.a1arick.spbsu.homework4.try2.server;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Tank implements ServerItem {
+public class Tank implements ServerItem, Serializable {
     private double x;
     private double y;
     private final double radius = 10;
