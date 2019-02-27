@@ -1,4 +1,4 @@
-package com.a1arick.spbsu.homework4.try2.server;
+package com.a1arick.spbsu.homework4.try2.server.model;
 
 public interface ServerItem {
     double getX();

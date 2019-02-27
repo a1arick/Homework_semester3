@@ -1,4 +1,4 @@
-package com.a1arick.spbsu.homework4.try2.server;
+package com.a1arick.spbsu.homework4.try2.server.model;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -13,6 +13,8 @@ public class Tank implements ServerItem, Serializable {
     private final double minAngle = - 3 * Math.PI / 4;
     private int clientId;
 
+    public Tank() {
+    }
 
     public Tank(int clientId) {
         this.clientId = clientId;
@@ -86,5 +88,19 @@ public class Tank implements ServerItem, Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(clientId);
+    }
+
+    @Override
+    public String toString() {
+        return "Tank{" +
+                "x=" + x +
+                ", y=" + y +
+                ", radius=" + radius +
+                ", angle=" + angle +
+                ", isDead=" + isDead +
+                ", maxAngle=" + maxAngle +
+                ", minAngle=" + minAngle +
+                ", clientId=" + clientId +
+                '}';
     }
 }

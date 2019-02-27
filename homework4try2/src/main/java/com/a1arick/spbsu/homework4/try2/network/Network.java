@@ -1,0 +1,23 @@
+package com.a1arick.spbsu.homework4.try2.network;
+
+import com.a1arick.spbsu.homework4.try2.server.model.Shot;
+import com.a1arick.spbsu.homework4.try2.server.model.Tank;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryonet.EndPoint;
+
+import java.util.ArrayList;
+
+public class Network {
+
+    static public final int serverPort = 54555;
+    // 54555
+    static public void register (EndPoint endPoint) {
+        Kryo kryo = endPoint.getKryo();
+        kryo.register(Update.class);
+        kryo.register(AddTank.class);
+        kryo.register(Move.class);
+        kryo.register(ArrayList.class);
+        kryo.register(Shot.class);
+        kryo.register(Tank.class);
+    }
+}

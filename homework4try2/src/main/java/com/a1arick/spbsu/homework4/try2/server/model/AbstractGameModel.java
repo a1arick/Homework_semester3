@@ -1,14 +1,11 @@
 package com.a1arick.spbsu.homework4.try2.server.model;
 
-import com.a1arick.spbsu.homework4.try2.server.Point;
-import com.a1arick.spbsu.homework4.try2.server.ServerItem;
-import com.a1arick.spbsu.homework4.try2.server.Shot;
-import com.a1arick.spbsu.homework4.try2.server.Tank;
+import com.esotericsoftware.kryonet.Connection;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class AbstractGameModel {
+public abstract class AbstractGameModel{
     public static final double G = 9.8;
     private static final double dX = 10; // ?
     private static final double dA = 0.5;
@@ -30,7 +27,7 @@ public abstract class AbstractGameModel {
             double x = tank.getX() + dX * (isRight ? 1 : -1); // todo учитывать угол!
             if (x > points.last().getX()) x = points.last().getX();
             else if (x < points.first().getX()) x = points.first().getX();
-            double y = tank.getY() + getY(x);
+            double y = getY(x);
             tank.setX(x);
             tank.setY(y);
             tanks.remove(clientId);

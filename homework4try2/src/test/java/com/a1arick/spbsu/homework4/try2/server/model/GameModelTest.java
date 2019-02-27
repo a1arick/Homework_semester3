@@ -1,7 +1,5 @@
 package com.a1arick.spbsu.homework4.try2.server.model;
 
-import com.a1arick.spbsu.homework4.try2.server.Point;
-import com.a1arick.spbsu.homework4.try2.server.ServerItem;
 import org.junit.Before;
 import org.junit.Test;
 

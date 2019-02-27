@@ -1,6 +1,4 @@
-package com.a1arick.spbsu.homework4.try2.server;
-
-import com.a1arick.spbsu.homework4.try2.server.model.ShotType;
+package com.a1arick.spbsu.homework4.try2.server.model;
 
 import java.io.Serializable;
 
@@ -18,6 +16,9 @@ public class Shot implements ServerItem, Serializable {
     public Shot(ShotType type, Tank tank) {
         this.type = type;
         this.tank = tank;
+    }
+
+    public Shot() {
     }
 
     public Tank getTank() {
@@ -95,5 +96,20 @@ public class Shot implements ServerItem, Serializable {
     @Override
     public int getClientId() {
         return tank.getClientId();
+    }
+
+    @Override
+    public String toString() {
+        return "Shot{" +
+                "type=" + type +
+                ", x=" + x +
+                ", y=" + y +
+                ", x0=" + x0 +
+                ", y0=" + y0 +
+                ", angle=" + angle +
+                ", time=" + time +
+                ", isDead=" + isDead +
+                ", tank=" + tank +
+                '}';
     }
 }

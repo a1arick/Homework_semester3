@@ -1,8 +1,5 @@
 package com.a1arick.spbsu.homework4.try2.server.model;
 
-import com.a1arick.spbsu.homework4.try2.server.Point;
-import org.junit.Test;
-
 import java.util.TreeSet;
 
 public class TestGameModel extends AbstractGameModel{
