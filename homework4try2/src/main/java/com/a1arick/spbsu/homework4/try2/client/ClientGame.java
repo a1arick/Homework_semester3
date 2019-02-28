@@ -119,12 +119,12 @@ public class ClientGame extends Application {
             client.sendTCP(new Move(tank.getClientId(), false));
         } else if (codes.contains("RIGHT")) {
             client.sendTCP(new Move(tank.getClientId(), true));
-        } else if(codes.contains("UP")){
-            client.sendTCP(new CannonMove(tank.getClientId(), true));
-        } else if(codes.contains("DOWN")){
-            client.sendTCP(new CannonMove(tank.getClientId(), false));
         } else if (codes.contains("SPACE")) {
             client.sendTCP(new MakeShot(tank.getClientId(), ShotType.BULLET));
+        } else if (codes.contains("UP")) {
+            client.sendTCP(new CannonMove(tank.getClientId(), true));
+        } else if (codes.contains("DOWN")) {
+            client.sendTCP(new CannonMove(tank.getClientId(), false));
         } else if (codes.contains("B")) {
             client.sendTCP(new MakeShot(tank.getClientId(), ShotType.BOMB));
         }

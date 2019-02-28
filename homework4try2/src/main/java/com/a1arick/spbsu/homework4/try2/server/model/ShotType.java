@@ -1,13 +1,13 @@
 package com.a1arick.spbsu.homework4.try2.server.model;
 
 public enum ShotType {
-    BULLET(0, 3, 1),
+    BULLET(0, 0.5, 1),
     BOMB(1, 1, 10),
     ;
 
-    private final int id;
-    private final double speed;
-    private final double radius;
+    private int id;
+    private double speed;
+    private double radius;
 
     ShotType(int id, double speed, double radius) {
         this.id = id;
@@ -15,6 +15,9 @@ public enum ShotType {
         this.radius = radius;
     }
 
+    ShotType() {
+
+    }
     public double getSpeed() {
         return speed;
     }

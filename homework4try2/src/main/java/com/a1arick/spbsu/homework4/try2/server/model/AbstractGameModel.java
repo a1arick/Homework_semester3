@@ -110,12 +110,12 @@ public abstract class AbstractGameModel{
         double v0 = shot.getSpeed();
         double x0 = shot.getX0();
         double y0 = shot.getY0();
-        double sin = Math.sin(shot.getAngle());
+        double sin = -Math.sin(shot.getAngle());
         double cos = Math.cos(shot.getAngle());
         double deltaT = now - shot.getTime();
 
         double newX = x0 + v0 * deltaT * cos;
-        double newY = y0 - v0 * deltaT * sin - 0.5 * G * deltaT * deltaT;
+        double newY = y0 + v0 * deltaT * sin - 0.5 * G * deltaT * deltaT;
 
 
         return new Point(newX, newY);

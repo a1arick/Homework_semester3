@@ -25,5 +25,6 @@ public class Network {
         kryo.register(CannonMove.class);
         kryo.register(ShotType.class);
         kryo.register(MakeShot.class);
+        kryo.register(ServerItem.class);
     }
 }
