@@ -1,11 +1,14 @@
 package com.a1arick.spbsu.homework4.try2.network;
 
+import com.a1arick.spbsu.homework4.try2.server.model.Point;
+import com.a1arick.spbsu.homework4.try2.server.model.Card;
 import com.a1arick.spbsu.homework4.try2.server.model.Shot;
 import com.a1arick.spbsu.homework4.try2.server.model.Tank;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 
 import java.util.ArrayList;
+import java.util.TreeSet;
 
 public class Network {
 
@@ -19,5 +22,9 @@ public class Network {
         kryo.register(ArrayList.class);
         kryo.register(Shot.class);
         kryo.register(Tank.class);
+        kryo.register(Card.class);
+        kryo.register(Point.class);
+        kryo.register(TreeSet.class);
+
     }
 }

@@ -2,9 +2,12 @@ package com.a1arick.spbsu.homework4.try2.server.model;
 
 import java.util.Objects;
 
-public class Point implements Comparable<Point>{
-    private final double x;
-    private final double y;
+public class Point implements Comparable<Point> {
+    private double x;
+    private double y;
+
+    public Point() {
+    }
 
     public Point(double x, double y) {
         this.x = x;

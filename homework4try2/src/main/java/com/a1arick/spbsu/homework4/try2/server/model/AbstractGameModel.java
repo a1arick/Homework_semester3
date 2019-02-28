@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AbstractGameModel{
     public static final double G = 9.8;
-    private static final double dX = 10; // ?
+    private static final double dX = 2; // ?
     private static final double dA = 0.5;
 
     private final TreeSet<Point> points;
