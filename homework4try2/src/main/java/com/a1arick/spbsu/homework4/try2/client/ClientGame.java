@@ -1,12 +1,10 @@
 package com.a1arick.spbsu.homework4.try2.client;
 
-import com.a1arick.spbsu.homework4.try2.network.AddTank;
-import com.a1arick.spbsu.homework4.try2.network.Move;
-import com.a1arick.spbsu.homework4.try2.network.Network;
-import com.a1arick.spbsu.homework4.try2.network.Update;
+import com.a1arick.spbsu.homework4.try2.network.*;
 import com.a1arick.spbsu.homework4.try2.server.model.Card;
 import com.a1arick.spbsu.homework4.try2.server.model.Point;
 import com.a1arick.spbsu.homework4.try2.server.model.ServerItem;
+import com.a1arick.spbsu.homework4.try2.server.model.ShotType;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -24,7 +22,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class ClientGame extends Application{
+public class ClientGame extends Application {
 
     private final Client client;
     private volatile boolean stopped = false;
@@ -35,6 +33,7 @@ public class ClientGame extends Application{
     private List<Point2D> land;
     private Card card = new Card();
     List<ServerItem> serverItems = new ArrayList<>();
+
     public ClientGame() throws IOException {
         client = new Client();
         client.start();
@@ -115,17 +114,21 @@ public class ClientGame extends Application{
         }).start();
     }
 
-    private void control(Collection<String> codes, AddTank tank ) {
+    private void control(Collection<String> codes, AddTank tank) {
         if (codes.contains("LEFT")) {
             client.sendTCP(new Move(tank.getClientId(), false));
+        } else if (codes.contains("RIGHT")) {
+            client.sendTCP(new Move(tank.getClientId(), true));
+        } else if(codes.contains("UP")){
+            client.sendTCP(new CannonMove(tank.getClientId(), true));
+        } else if(codes.contains("DOWN")){
+            client.sendTCP(new CannonMove(tank.getClientId(), false));
+        } else if (codes.contains("SPACE")) {
+            client.sendTCP(new MakeShot(tank.getClientId(), ShotType.BULLET));
+        } else if (codes.contains("B")) {
+            client.sendTCP(new MakeShot(tank.getClientId(), ShotType.BOMB));
         }
-        else {
-            if (codes.contains("RIGHT")) {
-                client.sendTCP(new Move(tank.getClientId(), true));
-            } else {
-                return;
-            }
-        }
+
     }
 
     private void draw(GraphicsContext graphicsContext) throws IOException {

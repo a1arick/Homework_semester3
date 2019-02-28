@@ -1,9 +1,6 @@
 package com.a1arick.spbsu.homework4.try2.server;
 
-import com.a1arick.spbsu.homework4.try2.network.AddTank;
-import com.a1arick.spbsu.homework4.try2.network.Move;
-import com.a1arick.spbsu.homework4.try2.network.Network;
-import com.a1arick.spbsu.homework4.try2.network.Update;
+import com.a1arick.spbsu.homework4.try2.network.*;
 import com.a1arick.spbsu.homework4.try2.server.model.*;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -39,6 +36,15 @@ public class ServerGame {
                 if(object instanceof Move) {
                     Move move = (Move) object;
                     gameModel.move(move.getClientId(), move.isRight());
+                }
+                if(object instanceof CannonMove) {
+                    CannonMove cannonMove = (CannonMove) object;
+                    gameModel.cannonMove(cannonMove.getClientId(), cannonMove.isRight());
+                }
+
+                if(object instanceof MakeShot) {
+                    MakeShot makeShot = (MakeShot) object;
+                    gameModel.makeShot(makeShot.getClientId(), makeShot.getType());
                 }
 
             }
