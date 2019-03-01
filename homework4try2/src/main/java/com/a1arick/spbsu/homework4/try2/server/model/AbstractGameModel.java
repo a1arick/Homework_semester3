@@ -87,6 +87,8 @@ public abstract class AbstractGameModel{
 
     public synchronized void makeShot(int clientId, ShotType type) {
         Tank tank = Objects.requireNonNull(tanks.get(clientId));
+        if(getTime() - tank.getLastFire() < 1000) return;
+        tank.setLastFire(getTime());
         Shot shot = new Shot(type, tank);
         shot.setX0(tank.getX());
         shot.setY0(tank.getY());
@@ -112,10 +114,12 @@ public abstract class AbstractGameModel{
         double y0 = shot.getY0();
         double sin = -Math.sin(shot.getAngle());
         double cos = Math.cos(shot.getAngle());
-        double deltaT = now - shot.getTime();
+        double deltaT = 0.003*(now - shot.getTime());
 
         double newX = x0 + v0 * deltaT * cos;
-        double newY = y0 + v0 * deltaT * sin - 0.5 * G * deltaT * deltaT;
+        double v = (v0 * deltaT * sin);
+        double v1 = (0.5 * G * deltaT * deltaT) ;
+        double newY = y0 - v + v1;
 
 
         return new Point(newX, newY);
@@ -135,6 +139,12 @@ public abstract class AbstractGameModel{
             Point floor = points.floor(temp);
             Point ceiling = points.ceiling(temp);
 
+            double x = points.first().getX();
+            double x3 = points.last().getX();
+            if(shot.getX() < x || shot.getX() > x3) {
+                deniedShots.add(shot);
+                continue;
+            }
 
             double x1 = floor.getX();
             double y1 = floor.getY();
@@ -151,8 +161,8 @@ public abstract class AbstractGameModel{
             }
 
             if (y2 - y1 == 0) {
-                right = y2;
-                left = temp.getY();
+                left = y2;
+                right = temp.getY();
             }
 
             if (right > left) { // пуля за картой

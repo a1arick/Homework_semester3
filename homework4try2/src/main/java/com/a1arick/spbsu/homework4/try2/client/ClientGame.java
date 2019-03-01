@@ -1,10 +1,7 @@
 package com.a1arick.spbsu.homework4.try2.client;
 
 import com.a1arick.spbsu.homework4.try2.network.*;
-import com.a1arick.spbsu.homework4.try2.server.model.Card;
-import com.a1arick.spbsu.homework4.try2.server.model.Point;
-import com.a1arick.spbsu.homework4.try2.server.model.ServerItem;
-import com.a1arick.spbsu.homework4.try2.server.model.ShotType;
+import com.a1arick.spbsu.homework4.try2.server.model.*;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -54,6 +51,7 @@ public class ClientGame extends Application {
                 if (object instanceof Update) {
                     Update update = (Update) object;
                     System.out.println(update.getServerItems().toString());
+                    //System.out.println(update.getServerItems().size());
                     serverItems = update.getServerItems();
                 }
                /* if (object instanceof Card) {
@@ -84,6 +82,7 @@ public class ClientGame extends Application {
         });
 
         primaryStage.show();
+
         draw(graphicsContext);
 
         new Thread(new Runnable() {
@@ -97,11 +96,20 @@ public class ClientGame extends Application {
                         draw(graphicsContext);
                     } catch (IOException e) {
                     }
+
                     control(codes, tank);
                     //client.sendTCP(new Move(tank.getClientId(), true));
                     for (ServerItem serverItem : serverItems) {
-                        graphicsContext.setFill(Color.BLACK);
-                        graphicsContext.fillRect(serverItem.getX() - 5, serverItem.getY() - 5, 10, 10);
+                        if(serverItem.getType() == Type.TANK && !serverItem.isDead()) {
+                            graphicsContext.setFill(Color.BLACK);
+                            graphicsContext.fillRect(serverItem.getX() - 10, serverItem.getY() - 10, 20, 20);
+                            graphicsContext.setStroke(Color.RED);
+                            graphicsContext.strokeLine(serverItem.getX(), serverItem.getY(), serverItem.getX() + Math.cos(serverItem.getAngle()) * 20, serverItem.getY() + Math.sin(serverItem.getAngle()) * 20);
+                        }
+                        else if(serverItem.getType() == Type.SHOT){
+                            graphicsContext.setFill(Color.RED);
+                            graphicsContext.fillRect(serverItem.getX() - 5, serverItem.getY() - 5, 5, 5);
+                        }
                     }
                     try {
                         Thread.sleep(100);
@@ -117,15 +125,15 @@ public class ClientGame extends Application {
     private void control(Collection<String> codes, AddTank tank) {
         if (codes.contains("LEFT")) {
             client.sendTCP(new Move(tank.getClientId(), false));
-        } else if (codes.contains("RIGHT")) {
-            client.sendTCP(new Move(tank.getClientId(), true));
-        } else if (codes.contains("SPACE")) {
+        }  if (codes.contains("SPACE")) {
             client.sendTCP(new MakeShot(tank.getClientId(), ShotType.BULLET));
-        } else if (codes.contains("UP")) {
+        }  if (codes.contains("RIGHT")) {
+            client.sendTCP(new Move(tank.getClientId(), true));
+        } if (codes.contains("UP")) {
             client.sendTCP(new CannonMove(tank.getClientId(), true));
-        } else if (codes.contains("DOWN")) {
+        }  if (codes.contains("DOWN")) {
             client.sendTCP(new CannonMove(tank.getClientId(), false));
-        } else if (codes.contains("B")) {
+        } if (codes.contains("B")) {
             client.sendTCP(new MakeShot(tank.getClientId(), ShotType.BOMB));
         }
 

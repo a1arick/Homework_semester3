@@ -36,7 +36,7 @@ public class GameModelTest {
         model.makeShot(0, ShotType.BULLET);
         //assertEquals(2, model.update().size());
 
-        model.setTime(2*ShotType.BULLET.getSpeed()/AbstractGameModel.G);
+        model.setTime(2*ShotType.BULLET.getSpeed()/AbstractGameModel.G );
         List<ServerItem> items1 = model.update();
 
         ServerItem serverItem1 = items1.stream()
@@ -59,7 +59,6 @@ public class GameModelTest {
             fail();
         }
         assertTrue(serverItem2.isDead());
-
 
     }
     @Test

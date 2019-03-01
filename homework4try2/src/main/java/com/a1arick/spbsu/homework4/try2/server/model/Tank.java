@@ -6,14 +6,23 @@ import java.util.Objects;
 public class Tank implements ServerItem, Serializable {
     private double x;
     private double y;
-    private final double radius = 10;
+    private final double radius = 20;
     private double angle;
     private boolean isDead = false;
     private final double maxAngle = - Math.PI / 4;
     private final double minAngle = - 3 * Math.PI / 4;
     private int clientId;
+    private double lastFire;
 
     public Tank() {
+    }
+
+    public double getLastFire() {
+        return lastFire;
+    }
+
+    public void setLastFire(double lastFire) {
+        this.lastFire = lastFire;
     }
 
     public Tank(int clientId) {
@@ -51,6 +60,11 @@ public class Tank implements ServerItem, Serializable {
     @Override
     public boolean isDead() {
         return isDead;
+    }
+
+    @Override
+    public Type getType() {
+        return Type.TANK;
     }
 
     @Override

@@ -94,6 +94,11 @@ public class Shot implements ServerItem, Serializable {
     }
 
     @Override
+    public Type getType() {
+        return Type.SHOT;
+    }
+
+    @Override
     public int getClientId() {
         return tank.getClientId();
     }

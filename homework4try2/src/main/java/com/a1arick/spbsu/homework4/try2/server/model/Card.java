@@ -8,10 +8,12 @@ public class Card {
     public Card() {
         points.add(new Point(100,100));
         points.add(new Point(200,200));
-        points.add(new Point(300,100));
-        points.add(new Point(400,100));
-        points.add(new Point(500,100));
-        points.add(new Point(600,100));
+        points.add(new Point(300,300));
+        points.add(new Point(400,200));
+        points.add(new Point(500,250));
+        points.add(new Point(600,200));
+        points.add(new Point(700,150));
+        points.add(new Point(800,200));
     }
 
 }
