@@ -102,7 +102,7 @@ public class ClientGame extends Application {
                     for (ServerItem serverItem : serverItems) {
                         if(serverItem.getType() == Type.TANK && !serverItem.isDead()) {
                             graphicsContext.setFill(Color.BLACK);
-                            graphicsContext.fillRect(serverItem.getX() - 10, serverItem.getY() - 10, 20, 20);
+                            graphicsContext.fillRect(serverItem.getX() - 5, serverItem.getY() - 5, 10, 10);
                             graphicsContext.setStroke(Color.RED);
                             graphicsContext.strokeLine(serverItem.getX(), serverItem.getY(), serverItem.getX() + Math.cos(serverItem.getAngle()) * 20, serverItem.getY() + Math.sin(serverItem.getAngle()) * 20);
                         }

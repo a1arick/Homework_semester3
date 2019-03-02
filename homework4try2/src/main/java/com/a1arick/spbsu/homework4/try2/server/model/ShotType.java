@@ -1,7 +1,7 @@
 package com.a1arick.spbsu.homework4.try2.server.model;
 
 public enum ShotType {
-    BULLET(0, 30, 10),
+    BULLET(0, 35, 10),
     BOMB(1, 1, 10),
     ;
 

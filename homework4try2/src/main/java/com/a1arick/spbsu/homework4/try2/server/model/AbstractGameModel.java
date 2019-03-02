@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class AbstractGameModel{
     public static final double G = 9.8;
     private static final double dX = 10; // ?
-    private static final double dA = -0.5;
+    private static final double dA = -0.1;
 
     private final TreeSet<Point> points;
     private final Set<Shot> shots = Collections.newSetFromMap(new ConcurrentHashMap<>());
@@ -140,8 +140,7 @@ public abstract class AbstractGameModel{
             Point ceiling = points.ceiling(temp);
 
             double x = points.first().getX();
-            double x3 = points.last().getX();
-            if(shot.getX() < x || shot.getX() > x3) {
+            if(shot.getX() < x || shot.getX() > points.last().getX() ) {
                 deniedShots.add(shot);
                 continue;
             }
@@ -151,9 +150,23 @@ public abstract class AbstractGameModel{
             double x2 = ceiling.getX();
             double y2 = ceiling.getY();
 
-            // учесть что floor и ceiling могут быть одинаковыми
-            double left = (temp.getY() - y1) / (y2 - y1);
-            double right = (temp.getX() - x1) / (x2 - x1);
+            double left = 0;
+            double right = 0;
+
+          /*  if(y2 > y1) {
+                left = (temp.getY() - y1) / (y2 - y1);
+                right = (temp.getX() - x1) / (x2 - x1);
+            }
+*/
+            if(y1 < y2) {
+                right = (temp.getY() - y1) / (y2 - y1);
+                left = (temp.getX() - x1) / (x2 - x1);
+            }
+
+            if(y1 > y2) {
+                left = (temp.getY() - y1) / (y2 - y1);
+                right = (temp.getX() - x1) / (x2 - x1);
+            }
 
             if (floor.equals(ceiling)) {
                 left = temp.getY();
