@@ -1,8 +1,5 @@
 package com.a1arick.spbsu.homework4.try2.network;
 
-import com.a1arick.spbsu.homework4.try2.server.model.AbstractGameModel;
-import com.a1arick.spbsu.homework4.try2.server.model.GameModel;
-
 public class AddTank {
     private int clientId;
 

@@ -68,6 +68,11 @@ public class Tank implements ServerItem, Serializable {
     }
 
     @Override
+    public ShotType getShotType() {
+        return null;
+    }
+
+    @Override
     public int getClientId() {
         return  clientId;
     }

@@ -7,6 +7,7 @@ public interface ServerItem {
     double getAngle();
     boolean isDead();
     Type getType();
+    ShotType getShotType();
 
     int getClientId();
 }

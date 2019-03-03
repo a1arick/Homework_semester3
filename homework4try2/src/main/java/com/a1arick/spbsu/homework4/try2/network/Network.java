@@ -10,7 +10,6 @@ import java.util.TreeSet;
 public class Network {
 
     static public final int serverPort = 54555;
-    // 54555
     static public void register (EndPoint endPoint) {
         Kryo kryo = endPoint.getKryo();
         kryo.register(Update.class);
@@ -19,7 +18,7 @@ public class Network {
         kryo.register(ArrayList.class);
         kryo.register(Shot.class);
         kryo.register(Tank.class);
-        kryo.register(Card.class);
+        kryo.register(GameMap.class);
         kryo.register(Point.class);
         kryo.register(TreeSet.class);
         kryo.register(CannonMove.class);

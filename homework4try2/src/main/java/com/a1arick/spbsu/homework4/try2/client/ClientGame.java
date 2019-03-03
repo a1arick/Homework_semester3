@@ -23,19 +23,15 @@ public class ClientGame extends Application {
 
     private final Client client;
     private volatile boolean stopped = false;
-    private boolean go = false;
     private static final int WIDTH = 1000;
-    private static final int HEIGHT = 300;
-    private TreeSet<Point> points = new TreeSet<>();
+    private static final int HEIGHT = 500;
     private List<Point2D> land;
-    private Card card = new Card();
+    private GameMap gameMap = new GameMap();
     List<ServerItem> serverItems = new ArrayList<>();
 
     public ClientGame() throws IOException {
         client = new Client();
         client.start();
-
-
         Network.register(client);
         client.connect(5000, "localhost", Network.serverPort);
 
@@ -51,12 +47,8 @@ public class ClientGame extends Application {
                 if (object instanceof Update) {
                     Update update = (Update) object;
                     System.out.println(update.getServerItems().toString());
-                    //System.out.println(update.getServerItems().size());
                     serverItems = update.getServerItems();
                 }
-               /* if (object instanceof Card) {
-                    card = (Card) object;
-                }*/
             }
         });
     }
@@ -95,24 +87,27 @@ public class ClientGame extends Application {
                     try {
                         draw(graphicsContext);
                     } catch (IOException e) {
+                        throw new NullPointerException(e.getMessage());
                     }
-
                     control(codes, tank);
-                    //client.sendTCP(new Move(tank.getClientId(), true));
                     for (ServerItem serverItem : serverItems) {
-                        if(serverItem.getType() == Type.TANK && !serverItem.isDead()) {
+                        if (serverItem.getType() == Type.TANK && !serverItem.isDead()) {
                             graphicsContext.setFill(Color.BLACK);
-                            graphicsContext.fillRect(serverItem.getX() - 5, serverItem.getY() - 5, 10, 10);
+                            graphicsContext.fillRect(serverItem.getX() - serverItem.getRadius() / 2, serverItem.getY() - serverItem.getRadius() / 2, serverItem.getRadius(), serverItem.getRadius());
                             graphicsContext.setStroke(Color.RED);
                             graphicsContext.strokeLine(serverItem.getX(), serverItem.getY(), serverItem.getX() + Math.cos(serverItem.getAngle()) * 20, serverItem.getY() + Math.sin(serverItem.getAngle()) * 20);
-                        }
-                        else if(serverItem.getType() == Type.SHOT){
-                            graphicsContext.setFill(Color.RED);
-                            graphicsContext.fillRect(serverItem.getX() - 5, serverItem.getY() - 5, 5, 5);
+                        } else if (serverItem.getType() == Type.SHOT) {
+                            if (serverItem.getShotType() == ShotType.BULLET) {
+                                graphicsContext.setFill(Color.RED);
+                                graphicsContext.fillOval(serverItem.getX() - serverItem.getRadius() / 2, serverItem.getY() - serverItem.getRadius() / 2, serverItem.getRadius(), serverItem.getRadius());
+                            } else {
+                                graphicsContext.setFill(Color.FIREBRICK);
+                                graphicsContext.fillRect(serverItem.getX() - serverItem.getRadius() / 2, serverItem.getY() - serverItem.getRadius() / 2, serverItem.getRadius(), serverItem.getRadius());
+                            }
                         }
                     }
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep(50);
                     } catch (InterruptedException e) {
                         Log.error("sleep error", e);
                         break;
@@ -125,15 +120,20 @@ public class ClientGame extends Application {
     private void control(Collection<String> codes, AddTank tank) {
         if (codes.contains("LEFT")) {
             client.sendTCP(new Move(tank.getClientId(), false));
-        }  if (codes.contains("SPACE")) {
+        }
+        if (codes.contains("SPACE")) {
             client.sendTCP(new MakeShot(tank.getClientId(), ShotType.BULLET));
-        }  if (codes.contains("RIGHT")) {
+        }
+        if (codes.contains("RIGHT")) {
             client.sendTCP(new Move(tank.getClientId(), true));
-        } if (codes.contains("UP")) {
+        }
+        if (codes.contains("UP")) {
             client.sendTCP(new CannonMove(tank.getClientId(), true));
-        }  if (codes.contains("DOWN")) {
+        }
+        if (codes.contains("DOWN")) {
             client.sendTCP(new CannonMove(tank.getClientId(), false));
-        } if (codes.contains("B")) {
+        }
+        if (codes.contains("B")) {
             client.sendTCP(new MakeShot(tank.getClientId(), ShotType.BOMB));
         }
 
@@ -141,7 +141,7 @@ public class ClientGame extends Application {
 
     private void draw(GraphicsContext graphicsContext) throws IOException {
         land = new ArrayList<>();
-        for (Point point : card.points) {
+        for (Point point : gameMap.points) {
             int x = (int) point.getX();
             int y = (int) point.getY();
             land.add(new Point2D(x, y));
@@ -156,6 +156,5 @@ public class ClientGame extends Application {
 
     public static void main(String[] args) throws IOException {
         launch(args);
-        //new ClientGame().run();
     }
 }

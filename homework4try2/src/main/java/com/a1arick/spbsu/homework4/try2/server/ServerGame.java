@@ -18,8 +18,7 @@ public class ServerGame {
         Network.register(server);
         Set<Integer> id = new HashSet<>();
         server.bind(Network.serverPort);
-        //GameModel gameModel = new GameModel(getPoints());
-        GameModel gameModel = new GameModel(new Card().points);
+        GameModel gameModel = new GameModel(new GameMap().points);
         server.start();
         server.addListener(new Listener() {
             public void received (Connection connection, Object object) {
@@ -29,7 +28,6 @@ public class ServerGame {
                         gameModel.addTank(tank.getClientId());
                         id.add(tank.getClientId());
                         System.out.println("Add tank: " +  tank.getClientId());
-                        //connection.sendTCP( new Card(getPoints()));
                     }
                 }
 
@@ -52,26 +50,13 @@ public class ServerGame {
 
         while (true) {
             server.sendToAllTCP(new Update(gameModel.update()));
-            //server.sendToAllTCP(new Card(getPoints()));
             try {
-                Thread.sleep(100);
+                Thread.sleep(50);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
-
-   /* private static TreeSet<Point> getPoints() {
-        TreeSet<Point> points = new TreeSet<>();
-        points.add(new Point(100,100));
-        points.add(new Point(200,200));
-        points.add(new Point(300,100));
-        points.add(new Point(400,100));
-        points.add(new Point(500,100));
-        points.add(new Point(600,100));
-        return points;
-    }*/
-
     public static void main (String[] args) throws IOException {
         Log.set(Log.LEVEL_DEBUG);
         new ServerGame();

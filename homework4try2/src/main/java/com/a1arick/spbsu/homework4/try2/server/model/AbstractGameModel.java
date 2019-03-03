@@ -1,14 +1,12 @@
 package com.a1arick.spbsu.homework4.try2.server.model;
 
-import com.esotericsoftware.kryonet.Connection;
-
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class AbstractGameModel{
+public abstract class AbstractGameModel {
     public static final double G = 9.8;
-    private static final double dX = 10; // ?
-    private static final double dA = -0.1;
+    private static final double dX = 10;
+    private static final double dA = -0.25;
 
     private final TreeSet<Point> points;
     private final Set<Shot> shots = Collections.newSetFromMap(new ConcurrentHashMap<>());
@@ -19,7 +17,6 @@ public abstract class AbstractGameModel{
     }
 
     protected abstract double getTime();
-
 
     synchronized public void move(int clientId, boolean isRight) {
         Tank tank = tanks.get(clientId);
@@ -35,7 +32,7 @@ public abstract class AbstractGameModel{
         }
     }
 
-    // для теста
+    // for  GameModelTest
     synchronized public void moveOnX(int clientId, double x) {
         Tank tank = tanks.get(clientId);
         if (tank != null && !tank.isDead()) {
@@ -58,7 +55,6 @@ public abstract class AbstractGameModel{
             double y1 = floor.getY();
             double x2 = ceiling.getX();
             double y2 = ceiling.getY();
-
             return ((x - x1) * (y2 - y1)) / (x2 - x1) + y1;
         }
     }
@@ -75,7 +71,7 @@ public abstract class AbstractGameModel{
         }
     }
 
-    // для теста
+    // for  GameModelTest
     public synchronized void cannonMoveOnAngle(int clientId, double angle) {
         Tank tank = tanks.get(clientId);
         if (tank != null && !tank.isDead()) {
@@ -87,7 +83,7 @@ public abstract class AbstractGameModel{
 
     public synchronized void makeShot(int clientId, ShotType type) {
         Tank tank = Objects.requireNonNull(tanks.get(clientId));
-        if(getTime() - tank.getLastFire() < 1000) return;
+        if (getTime() - tank.getLastFire() < 1000) return;
         tank.setLastFire(getTime());
         Shot shot = new Shot(type, tank);
         shot.setX0(tank.getX());
@@ -114,17 +110,13 @@ public abstract class AbstractGameModel{
         double y0 = shot.getY0();
         double sin = -Math.sin(shot.getAngle());
         double cos = Math.cos(shot.getAngle());
-        double deltaT = 0.003*(now - shot.getTime());
-
+        double deltaT;
+        if (shot.getShotType() == ShotType.BULLET) deltaT = 0.01 * (now - shot.getTime());
+        else deltaT = 0.005 * (now - shot.getTime());
         double newX = x0 + v0 * deltaT * cos;
-        double v = (v0 * deltaT * sin);
-        double v1 = (0.5 * G * deltaT * deltaT) ;
-        double newY = y0 - v + v1;
-
-
+        double newY = y0 - v0 * deltaT * sin + 0.5 * G * deltaT * deltaT;
         return new Point(newX, newY);
     }
-
 
     public synchronized List<ServerItem> update() {
         double now = getTime();
@@ -134,54 +126,34 @@ public abstract class AbstractGameModel{
             Point newCord = shotNewXY(shot, now);
             shot.setX(newCord.getX());
             shot.setY(newCord.getY());
-
             Point temp = new Point(shot.getX(), shot.getY());
             Point floor = points.floor(temp);
             Point ceiling = points.ceiling(temp);
-
-            double x = points.first().getX();
-            if(shot.getX() < x || shot.getX() > points.last().getX() ) {
+            if (shot.getX() < points.first().getX() || shot.getX() > points.last().getX()) {
                 deniedShots.add(shot);
                 continue;
             }
-
             double x1 = floor.getX();
             double y1 = floor.getY();
             double x2 = ceiling.getX();
             double y2 = ceiling.getY();
-
-            double left = 0;
-            double right = 0;
-
-          /*  if(y2 > y1) {
-                left = (temp.getY() - y1) / (y2 - y1);
-                right = (temp.getX() - x1) / (x2 - x1);
-            }
-*/
-            if(y1 < y2) {
+            double left;
+            double right;
+            if (y1 < y2) {
                 right = (temp.getY() - y1) / (y2 - y1);
                 left = (temp.getX() - x1) / (x2 - x1);
-            }
-
-            if(y1 > y2) {
+            } else if (y1 > y2) {
                 left = (temp.getY() - y1) / (y2 - y1);
                 right = (temp.getX() - x1) / (x2 - x1);
-            }
-
-            if (floor.equals(ceiling)) {
-                left = temp.getY();
-                right = floor.getY();
-            }
-
-            if (y2 - y1 == 0) {
+            } else {
                 left = y2;
                 right = temp.getY();
             }
-
-            if (right > left) { // пуля за картой
+            if (right > left) { // the bullet went beyond the map
                 for (Tank tank : tanks.values()) {
                     if (!tank.isDead() && !shot.getTank().equals(tank)) {
                         double dist = Math.sqrt((tank.getX() - shot.getX()) * (tank.getX() - shot.getX()) + (tank.getY() - shot.getY()) * (tank.getY() - shot.getY()));
+                        if (shot.getShotType() == ShotType.BOMB) dist = dist / 2;
                         if (dist < shot.getRadius()) {
                             tank.kill();
                         }
@@ -192,11 +164,9 @@ public abstract class AbstractGameModel{
             }
 
         }
-
         for (Shot shot : deniedShots) {
             shots.remove(shot);
         }
-
         serverItems.addAll(tanks.values());
         serverItems.addAll(shots);
         return serverItems;
