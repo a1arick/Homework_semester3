@@ -2,6 +2,9 @@ package com.a1arick.spbsu.homework4.try2.server.model;
 
 import java.util.Objects;
 
+/**
+ * Coordinates on map
+ */
 public class Point implements Comparable<Point> {
     private double x;
     private double y;

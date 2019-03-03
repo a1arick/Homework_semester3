@@ -2,6 +2,9 @@ package com.a1arick.spbsu.homework4.try2.server.model;
 
 import java.io.Serializable;
 
+/**
+ * Shot in the game
+ */
 public class Shot implements ServerItem, Serializable {
     private ShotType type;
     private double x;

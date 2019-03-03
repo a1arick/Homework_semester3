@@ -19,6 +19,9 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Client for game
+ */
 public class ClientGame extends Application {
 
     private final Client client;
@@ -29,6 +32,10 @@ public class ClientGame extends Application {
     private GameMap gameMap = new GameMap();
     List<ServerItem> serverItems = new ArrayList<>();
 
+    /**
+     * Connects to the server and updates the contents of the card
+     * @throws IOException IOException
+     */
     public ClientGame() throws IOException {
         client = new Client();
         client.start();
@@ -117,6 +124,11 @@ public class ClientGame extends Application {
         }).start();
     }
 
+    /**
+     * Responds to keystrokes and sends a message to the server
+     * @param codes key pressed by the player
+     * @param tank tank controlled by a player
+     */
     private void control(Collection<String> codes, AddTank tank) {
         if (codes.contains("LEFT")) {
             client.sendTCP(new Move(tank.getClientId(), false));
@@ -139,6 +151,11 @@ public class ClientGame extends Application {
 
     }
 
+    /**
+     * Draws a game map
+     * @param graphicsContext graphicsContext
+     * @throws IOException IOException
+     */
     private void draw(GraphicsContext graphicsContext) throws IOException {
         land = new ArrayList<>();
         for (Point point : gameMap.points) {

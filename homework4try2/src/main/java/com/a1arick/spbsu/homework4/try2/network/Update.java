@@ -4,6 +4,9 @@ import com.a1arick.spbsu.homework4.try2.server.model.ServerItem;
 
 import java.util.List;
 
+/**
+ * Update map content for Network calls
+ */
 public class Update {
     private List<ServerItem> serverItems;
 

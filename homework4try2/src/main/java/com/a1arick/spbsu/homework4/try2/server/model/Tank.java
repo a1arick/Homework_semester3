@@ -2,7 +2,9 @@ package com.a1arick.spbsu.homework4.try2.server.model;
 
 import java.io.Serializable;
 import java.util.Objects;
-
+/**
+ * Tank in the game
+ */
 public class Tank implements ServerItem, Serializable {
     private double x;
     private double y;

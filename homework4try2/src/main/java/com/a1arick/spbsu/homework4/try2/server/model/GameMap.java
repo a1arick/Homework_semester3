@@ -2,6 +2,9 @@ package com.a1arick.spbsu.homework4.try2.server.model;
 
 import java.util.TreeSet;
 
+/**
+ * Map game
+ */
 public class GameMap {
     public TreeSet<Point> points = new TreeSet<>();
 

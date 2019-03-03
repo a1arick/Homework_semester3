@@ -3,6 +3,9 @@ package com.a1arick.spbsu.homework4.try2.server.model;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Abstract game model
+ */
 public abstract class AbstractGameModel {
     public static final double G = 9.8;
     private static final double dX = 10;
@@ -18,10 +21,16 @@ public abstract class AbstractGameModel {
 
     protected abstract double getTime();
 
+
+    /**
+     * Move tank
+     * @param clientId client id
+     * @param isRight is right
+     */
     synchronized public void move(int clientId, boolean isRight) {
         Tank tank = tanks.get(clientId);
         if (tank != null && !tank.isDead()) {
-            double x = tank.getX() + dX * (isRight ? 1 : -1); // todo учитывать угол!
+            double x = tank.getX() + dX * (isRight ? 1 : -1);
             if (x > points.last().getX()) x = points.last().getX();
             else if (x < points.first().getX()) x = points.first().getX();
             double y = getY(x);
@@ -32,7 +41,12 @@ public abstract class AbstractGameModel {
         }
     }
 
-    // for  GameModelTest
+    /**
+     * Move tank to a certain point
+     * (for  GameModelTest)
+     * @param clientId client id
+     * @param x certain point
+     */
     synchronized public void moveOnX(int clientId, double x) {
         Tank tank = tanks.get(clientId);
         if (tank != null && !tank.isDead()) {
@@ -44,6 +58,11 @@ public abstract class AbstractGameModel {
         }
     }
 
+    /**
+     * Return y coordinate for right move tank by map
+     * @param x x coordinate
+     * @return y coordinates depending on x coordinate
+     */
     private double getY(double x) {
         Point point = new Point(x, 0);
         Point floor = points.floor(point);
@@ -59,6 +78,11 @@ public abstract class AbstractGameModel {
         }
     }
 
+    /**
+     * Move cannon
+     * @param clientId client id
+     * @param isRight is right
+     */
     public synchronized void cannonMove(int clientId, boolean isRight) {
         Tank tank = tanks.get(clientId);
         if (tank != null && !tank.isDead()) {
@@ -71,7 +95,12 @@ public abstract class AbstractGameModel {
         }
     }
 
-    // for  GameModelTest
+    /**
+     * Move cannon to a certain angle
+     * (for  GameModelTest)
+     * @param clientId client id
+     * @param angle certain angle
+     */
     public synchronized void cannonMoveOnAngle(int clientId, double angle) {
         Tank tank = tanks.get(clientId);
         if (tank != null && !tank.isDead()) {
@@ -81,6 +110,11 @@ public abstract class AbstractGameModel {
         }
     }
 
+    /**
+     * Tank make shot
+     * @param clientId client id
+     * @param type shot type
+     */
     public synchronized void makeShot(int clientId, ShotType type) {
         Tank tank = Objects.requireNonNull(tanks.get(clientId));
         if (getTime() - tank.getLastFire() < 1000) return;
@@ -95,6 +129,10 @@ public abstract class AbstractGameModel {
         shots.add(shot);
     }
 
+    /**
+     * Add tank on map
+     * @param clientId id tank
+     */
     public synchronized void addTank(int clientId) {
         Point first = points.first();
         Tank tank = new Tank(clientId);
@@ -104,6 +142,12 @@ public abstract class AbstractGameModel {
         tanks.put(clientId, tank);
     }
 
+    /**
+     * calculating the coordinates of the parabolic shot
+     * @param shot shot
+     * @param now time
+     * @return new coordinate shot
+     */
     private Point shotNewXY(Shot shot, double now) {
         double v0 = shot.getSpeed();
         double x0 = shot.getX0();
@@ -118,6 +162,10 @@ public abstract class AbstractGameModel {
         return new Point(newX, newY);
     }
 
+    /**
+     * Update position tanks and shots. Kills tanks if tank catch shot. Kills shots if shot flew off the map
+     * @return alive shots and tanks
+     */
     public synchronized List<ServerItem> update() {
         double now = getTime();
         List<Shot> deniedShots = new ArrayList<>();

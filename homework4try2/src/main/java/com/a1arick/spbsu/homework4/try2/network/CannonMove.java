@@ -1,5 +1,8 @@
 package com.a1arick.spbsu.homework4.try2.network;
 
+/**
+ * Move cannon for Network calls
+ */
 public class CannonMove {
     private int clientId;
     private boolean isRight;

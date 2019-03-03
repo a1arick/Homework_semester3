@@ -10,9 +10,16 @@ import com.esotericsoftware.minlog.Log;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Server in the game
+ */
 public class ServerGame {
     Server server;
 
+    /**
+     * Register server and receives messages from the client. Sends an update position shots and tanks
+     * @throws IOException IOException
+     */
     public ServerGame() throws IOException {
         server = new Server();
         Network.register(server);

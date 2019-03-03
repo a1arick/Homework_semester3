@@ -1,7 +1,9 @@
 package com.a1arick.spbsu.homework4.try2.network;
 
 import com.a1arick.spbsu.homework4.try2.server.model.ShotType;
-
+/**
+ * Make shot for Network calls
+ */
 public class MakeShot {
     private int clientId;
     private ShotType type;

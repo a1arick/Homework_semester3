@@ -1,5 +1,8 @@
 package com.a1arick.spbsu.homework4.try2.network;
 
+/**
+ * Add tank for Network calls
+ */
 public class AddTank {
     private int clientId;
 

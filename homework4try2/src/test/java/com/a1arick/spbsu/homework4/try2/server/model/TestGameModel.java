@@ -2,6 +2,9 @@ package com.a1arick.spbsu.homework4.try2.server.model;
 
 import java.util.TreeSet;
 
+/**
+ * Send certain time on the map
+ */
 public class TestGameModel extends AbstractGameModel{
     private double time;
 

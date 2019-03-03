@@ -1,5 +1,8 @@
 package com.a1arick.spbsu.homework4.try2.server.model;
 
+/**
+ *  Shot type in game
+ */
 public enum ShotType {
     BULLET(60, 5),
     BOMB(30, 15);

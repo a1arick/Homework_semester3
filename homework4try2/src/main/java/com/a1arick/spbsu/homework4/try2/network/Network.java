@@ -7,9 +7,18 @@ import com.esotericsoftware.kryonet.EndPoint;
 import java.util.ArrayList;
 import java.util.TreeSet;
 
+/**
+ * Network for client/server game
+ */
 public class Network {
 
     static public final int serverPort = 54555;
+
+    /**
+     * Registers classes for calling at client and server
+     * (All classes must have empty constructor)
+     * @param endPoint end point
+     */
     static public void register (EndPoint endPoint) {
         Kryo kryo = endPoint.getKryo();
         kryo.register(Update.class);

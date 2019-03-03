@@ -4,6 +4,9 @@ import com.esotericsoftware.kryonet.Connection;
 
 import java.util.TreeSet;
 
+/**
+ * Game model
+ */
 public class GameModel extends AbstractGameModel {
 
 

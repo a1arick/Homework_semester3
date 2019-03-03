@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.TreeSet;
 
 import static org.junit.Assert.*;
-
+/**
+ * Test game model
+ */
 public class GameModelTest {
 
     private TestGameModel model;
@@ -24,6 +26,9 @@ public class GameModelTest {
         model = new TestGameModel(points);
     }
 
+    /**
+     * 90 degree shot
+     */
     @Test
     public void test1() {
         model.addTank(0);
@@ -61,6 +66,10 @@ public class GameModelTest {
         assertTrue(serverItem2.isDead());
 
     }
+
+    /**
+     * 45 degree shot
+     */
     @Test
     public void test2() {
         model.addTank(0);
