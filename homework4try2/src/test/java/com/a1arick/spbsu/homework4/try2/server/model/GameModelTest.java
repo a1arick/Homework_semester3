@@ -23,6 +23,8 @@ public class GameModelTest {
         points.add(new Point(200, 100));
         points.add(new Point(300, 100));
         points.add(new Point(400, 100));
+        points.add(new Point(500, 100));
+        points.add(new Point(600, 100));
         model = new TestGameModel(points);
     }
 
@@ -33,15 +35,12 @@ public class GameModelTest {
     public void test1() {
         model.addTank(0);
         model.addTank(1);
-        // повернуть пушку на 90 градусов
         model.cannonMoveOnAngle(0, - Math.PI / 2);
 
         model.setTime(0);
         assertEquals(2, model.update().size());
         model.makeShot(0, ShotType.BULLET);
-        //assertEquals(2, model.update().size());
-
-        model.setTime(2*ShotType.BULLET.getSpeed()/AbstractGameModel.G );
+        model.setTime((2*ShotType.BULLET.getSpeed()/AbstractGameModel.G ) * 100);
         List<ServerItem> items1 = model.update();
 
         ServerItem serverItem1 = items1.stream()
@@ -53,7 +52,7 @@ public class GameModelTest {
         }
         assertFalse(serverItem1.isDead());
 
-        model.setTime(2*ShotType.BULLET.getSpeed()/AbstractGameModel.G + dE);
+        model.setTime((2*ShotType.BULLET.getSpeed()/AbstractGameModel.G + dE) * 100);
         List<ServerItem> items2 = model.update();
 
         ServerItem serverItem2 = items2.stream()
@@ -64,7 +63,6 @@ public class GameModelTest {
             fail();
         }
         assertTrue(serverItem2.isDead());
-
     }
 
     /**
@@ -85,7 +83,7 @@ public class GameModelTest {
         model.setTime(0);
         model.makeShot(0, ShotType.BULLET);
 
-        model.setTime(tFull + dE);
+        model.setTime((tFull + dE) * 100);
 
         List<ServerItem> items1 = model.update();
 

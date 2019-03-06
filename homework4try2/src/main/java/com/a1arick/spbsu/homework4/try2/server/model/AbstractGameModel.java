@@ -117,7 +117,7 @@ public abstract class AbstractGameModel {
      */
     public synchronized void makeShot(int clientId, ShotType type) {
         Tank tank = Objects.requireNonNull(tanks.get(clientId));
-        if (getTime() - tank.getLastFire() < 1000) return;
+        if (getTime() - tank.getLastFire() < 1000 && getTime() != 0) return;
         tank.setLastFire(getTime());
         Shot shot = new Shot(type, tank);
         shot.setX0(tank.getX());
@@ -157,6 +157,7 @@ public abstract class AbstractGameModel {
         double deltaT;
         if (shot.getShotType() == ShotType.BULLET) deltaT = 0.01 * (now - shot.getTime());
         else deltaT = 0.005 * (now - shot.getTime());
+        //double deltaT = now - shot.getTime();
         double newX = x0 + v0 * deltaT * cos;
         double newY = y0 - v0 * deltaT * sin + 0.5 * G * deltaT * deltaT;
         return new Point(newX, newY);
@@ -201,7 +202,7 @@ public abstract class AbstractGameModel {
                 for (Tank tank : tanks.values()) {
                     if (!tank.isDead() && !shot.getTank().equals(tank)) {
                         double dist = Math.sqrt((tank.getX() - shot.getX()) * (tank.getX() - shot.getX()) + (tank.getY() - shot.getY()) * (tank.getY() - shot.getY()));
-                        if (shot.getShotType() == ShotType.BOMB) dist = dist / 2;
+                        //dist = dist / 2;
                         if (dist < shot.getRadius()) {
                             tank.kill();
                         }

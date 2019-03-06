@@ -84,41 +84,38 @@ public class ClientGame extends Application {
 
         draw(graphicsContext);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                AddTank tank = new AddTank(ThreadLocalRandom.current().nextInt());
-                client.sendTCP(tank);
-                while (!stopped) {
-                    graphicsContext.clearRect(0, 0, WIDTH, HEIGHT);
-                    try {
-                        draw(graphicsContext);
-                    } catch (IOException e) {
-                        throw new NullPointerException(e.getMessage());
-                    }
-                    control(codes, tank);
-                    for (ServerItem serverItem : serverItems) {
-                        if (serverItem.getType() == Type.TANK && !serverItem.isDead()) {
-                            graphicsContext.setFill(Color.BLACK);
-                            graphicsContext.fillRect(serverItem.getX() - serverItem.getRadius() / 2, serverItem.getY() - serverItem.getRadius() / 2, serverItem.getRadius(), serverItem.getRadius());
-                            graphicsContext.setStroke(Color.RED);
-                            graphicsContext.strokeLine(serverItem.getX(), serverItem.getY(), serverItem.getX() + Math.cos(serverItem.getAngle()) * 20, serverItem.getY() + Math.sin(serverItem.getAngle()) * 20);
-                        } else if (serverItem.getType() == Type.SHOT) {
-                            if (serverItem.getShotType() == ShotType.BULLET) {
-                                graphicsContext.setFill(Color.RED);
-                                graphicsContext.fillOval(serverItem.getX() - serverItem.getRadius() / 2, serverItem.getY() - serverItem.getRadius() / 2, serverItem.getRadius(), serverItem.getRadius());
-                            } else {
-                                graphicsContext.setFill(Color.FIREBRICK);
-                                graphicsContext.fillRect(serverItem.getX() - serverItem.getRadius() / 2, serverItem.getY() - serverItem.getRadius() / 2, serverItem.getRadius(), serverItem.getRadius());
-                            }
+        new Thread(() -> {
+            AddTank tank = new AddTank(ThreadLocalRandom.current().nextInt());
+            client.sendTCP(tank);
+            while (!stopped) {
+                graphicsContext.clearRect(0, 0, WIDTH, HEIGHT);
+                try {
+                    draw(graphicsContext);
+                } catch (IOException e) {
+                    Log.error("draw error", e);
+                }
+                control(codes, tank);
+                for (ServerItem serverItem : serverItems) {
+                    if (serverItem.getType() == Type.TANK && !serverItem.isDead()) {
+                        graphicsContext.setFill(Color.BLACK);
+                        graphicsContext.fillRect(serverItem.getX() - serverItem.getRadius() / 2, serverItem.getY() - serverItem.getRadius() / 2, serverItem.getRadius(), serverItem.getRadius());
+                        graphicsContext.setStroke(Color.RED);
+                        graphicsContext.strokeLine(serverItem.getX(), serverItem.getY(), serverItem.getX() + Math.cos(serverItem.getAngle()) * 20, serverItem.getY() + Math.sin(serverItem.getAngle()) * 20);
+                    } else if (serverItem.getType() == Type.SHOT) {
+                        if (serverItem.getShotType() == ShotType.BULLET) {
+                            graphicsContext.setFill(Color.RED);
+                            graphicsContext.fillOval(serverItem.getX() + Math.cos(serverItem.getAngle()) * 20, serverItem.getY() + Math.sin(serverItem.getAngle()) * 20, 5, 5);
+                        } else {
+                            graphicsContext.setFill(Color.FIREBRICK);
+                            graphicsContext.fillRect(serverItem.getX() + Math.cos(serverItem.getAngle()) * 20 -7.5, serverItem.getY() + Math.sin(serverItem.getAngle()) * 20, 15, 15);
                         }
                     }
-                    try {
-                        Thread.sleep(50);
-                    } catch (InterruptedException e) {
-                        Log.error("sleep error", e);
-                        break;
-                    }
+                }
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    Log.error("sleep error", e);
+                    break;
                 }
             }
         }).start();
