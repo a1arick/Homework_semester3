@@ -9,7 +9,7 @@ public interface ServerItem {
     double getRadius();
     double getAngle();
     boolean isDead();
-    Type getType();
+    GameObjectType getType();
     ShotType getShotType();
 
     int getClientId();

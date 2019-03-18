@@ -28,9 +28,8 @@ public class ClientGame extends Application {
     private volatile boolean stopped = false;
     private static final int WIDTH = 1000;
     private static final int HEIGHT = 500;
-    private List<Point2D> land;
-    private GameMap gameMap = new GameMap();
-    List<ServerItem> serverItems = new ArrayList<>();
+    private final GameMap gameMap = new GameMap();
+    private List<ServerItem> serverItems = new ArrayList<>();
 
     /**
      * Connects to the server and updates the contents of the card
@@ -72,13 +71,9 @@ public class ClientGame extends Application {
 
         Collection<String> codes = new LinkedHashSet<>();
 
-        scene.setOnKeyPressed(event -> {
-            codes.add(event.getCode().toString());
-        });
+        scene.setOnKeyPressed(event -> codes.add(event.getCode().toString()));
 
-        scene.setOnKeyReleased(event -> {
-            codes.remove(event.getCode().toString());
-        });
+        scene.setOnKeyReleased(event -> codes.remove(event.getCode().toString()));
 
         primaryStage.show();
 
@@ -96,12 +91,12 @@ public class ClientGame extends Application {
                 }
                 control(codes, tank);
                 for (ServerItem serverItem : serverItems) {
-                    if (serverItem.getType() == Type.TANK && !serverItem.isDead()) {
+                    if (serverItem.getType() == GameObjectType.TANK && !serverItem.isDead()) {
                         graphicsContext.setFill(Color.BLACK);
                         graphicsContext.fillRect(serverItem.getX() - serverItem.getRadius() / 2, serverItem.getY() - serverItem.getRadius() / 2, serverItem.getRadius(), serverItem.getRadius());
                         graphicsContext.setStroke(Color.RED);
                         graphicsContext.strokeLine(serverItem.getX(), serverItem.getY(), serverItem.getX() + Math.cos(serverItem.getAngle()) * 20, serverItem.getY() + Math.sin(serverItem.getAngle()) * 20);
-                    } else if (serverItem.getType() == Type.SHOT) {
+                    } else if (serverItem.getType() == GameObjectType.SHOT) {
                         if (serverItem.getShotType() == ShotType.BULLET) {
                             graphicsContext.setFill(Color.RED);
                             graphicsContext.fillOval(serverItem.getX() + Math.cos(serverItem.getAngle()) * 20, serverItem.getY() + Math.sin(serverItem.getAngle()) * 20, 5, 5);
@@ -154,7 +149,7 @@ public class ClientGame extends Application {
      * @throws IOException IOException
      */
     private void draw(GraphicsContext graphicsContext) throws IOException {
-        land = new ArrayList<>();
+        List<Point2D> land = new ArrayList<>();
         for (Point point : gameMap.points) {
             int x = (int) point.getX();
             int y = (int) point.getY();

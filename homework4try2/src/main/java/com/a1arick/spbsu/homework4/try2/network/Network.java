@@ -34,6 +34,6 @@ public class Network {
         kryo.register(ShotType.class);
         kryo.register(MakeShot.class);
         kryo.register(ServerItem.class);
-        kryo.register(Type.class);
+        kryo.register(GameObjectType.class);
     }
 }

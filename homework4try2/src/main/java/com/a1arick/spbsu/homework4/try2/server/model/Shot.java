@@ -97,8 +97,8 @@ public class Shot implements ServerItem, Serializable {
     }
 
     @Override
-    public Type getType() {
-        return Type.SHOT;
+    public GameObjectType getType() {
+        return GameObjectType.SHOT;
     }
 
     @Override

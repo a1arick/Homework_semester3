@@ -65,8 +65,8 @@ public class Tank implements ServerItem, Serializable {
     }
 
     @Override
-    public Type getType() {
-        return Type.TANK;
+    public GameObjectType getType() {
+        return GameObjectType.TANK;
     }
 
     @Override
