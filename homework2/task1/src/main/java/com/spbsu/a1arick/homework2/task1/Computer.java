@@ -1,6 +1,7 @@
 package com.spbsu.a1arick.homework2.task1;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Class realizing computer in network
@@ -60,7 +61,7 @@ public class Computer {
     /**
      * Return all computers which are connected to this
      * @return all computers which are connected to this
-     */
+       */
     public Set<Computer> getConnectedComputers() {
         return connectedComputers;
     }
@@ -71,7 +72,7 @@ public class Computer {
      * @return true if virus can infect this
      */
     public boolean canInfect(Virus virus) {
-        return virus.getPower() > operationSystem.getResistance();
+        return virus.getPower() * getRandomDouble() > operationSystem.getResistance() / 2;
     }
 
     @Override
@@ -85,5 +86,9 @@ public class Computer {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    protected double getRandomDouble() {
+        return ThreadLocalRandom.current().nextDouble();
     }
 }

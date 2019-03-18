@@ -15,6 +15,9 @@ public class Virus {
     public Virus(String name, double power) {
         this.name = name;
         this.power = power;
+        if (this.power > 1) {
+            throw new IllegalArgumentException("Virus power can'tbe more than 1");
+        }
     }
 
     /**

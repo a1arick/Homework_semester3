@@ -1,5 +1,6 @@
 package com.spbsu.a1arick.homework2.task1;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashSet;
@@ -9,22 +10,49 @@ import static org.junit.Assert.*;
 
 public class NetworkTest {
 
+    private static final class TestComputer extends Computer {
+
+        private final double random;
+
+        public TestComputer(int id, OperationSystem operationSystem) {
+            super(id, operationSystem);
+            random = 0.5;
+        }
+
+        public TestComputer(int id, OperationSystem operationSystem, double random) {
+            super(id, operationSystem);
+            this.random = random;
+        }
+
+        @Override
+        protected double getRandomDouble() {
+            return random;
+        }
+    }
+
+    private Network network;
+
+    @Before
+    public void setUp() throws Exception {
+        network = new Network();
+        network.add(new TestComputer(1,OperationSystem.WINDOWS));
+        network.add(new TestComputer(2,OperationSystem.LINUX));
+        network.add(new TestComputer(3,OperationSystem.IOS));
+        network.add(new TestComputer(4,OperationSystem.ANDROID));
+    }
 
     @Test
     public void add() {
-        Network network = new Network();
-        network.add(1, "Windows");
-        network.add(2,"Linux");
-        network.add(3,"IOS");
-        network.add(4,"IOs");
-        assertEquals(3, network.size());
+        assertEquals(4, network.size());
+        network.add(4, "WINDOWS");
+        assertEquals(4, network.size());
     }
 
     @Test
     public void connect() {
-        Computer computer1 = new Computer(1,OperationSystem.WINDOWS);
-        Computer computer2 = new Computer(2,OperationSystem.IOS);
-        Computer computer3 = new Computer(3,OperationSystem.ANDROID);
+        Computer computer1 = new TestComputer(1,OperationSystem.WINDOWS);
+        Computer computer2 = new TestComputer(2,OperationSystem.IOS);
+        Computer computer3 = new TestComputer(3,OperationSystem.ANDROID);
         computer1.connect(computer2);
         computer2.connect(computer3);
         Set<Computer> connectedComputers1 = computer1.getConnectedComputers();
@@ -33,16 +61,31 @@ public class NetworkTest {
         assertEquals(1,connectedComputers1.size());
         assertEquals(2,connectedComputers2.size());
         assertEquals(1,connectedComputers3.size());
+    }
 
+    @Test
+    public void canInfect() {
+        Computer computer1 = new TestComputer(1,OperationSystem.WINDOWS, 1);
+        Computer computer2 = new TestComputer(2,OperationSystem.WINDOWS, 0.5);
+        Computer computer3 = new TestComputer(3,OperationSystem.WINDOWS, 0.25);
+        Virus v1 = new Virus("virus1", 0.1);
+        assertTrue(computer1.canInfect(v1));
+        assertFalse(computer2.canInfect(v1));
+        assertFalse(computer3.canInfect(v1));
+
+        Virus v2 = new Virus("virus2", 0.2);
+        assertTrue(computer1.canInfect(v2));
+        assertTrue(computer2.canInfect(v2));
+        assertFalse(computer3.canInfect(v2));
+
+        Virus v3 = new Virus("virus3", 1);
+        assertTrue(computer1.canInfect(v3));
+        assertTrue(computer2.canInfect(v3));
+        assertTrue(computer3.canInfect(v3));
     }
 
     @Test
     public void infect1() {
-        Network network = new Network();
-        network.add(1, "Windows");
-        network.add(2, "Linux");
-        network.add(3, "IOS");
-        network.add(4, "Android");
         network.connect(1,2);
         network.connect(3,2);
         network.connect(1,3);
@@ -56,11 +99,6 @@ public class NetworkTest {
 
     @Test
     public void infect2() {
-        Network network = new Network();
-        network.add(1, "Windows");
-        network.add(2, "Linux");
-        network.add(3, "IOS");
-        network.add(4, "Android");
         network.connect(1,2);
         network.connect(3,2);
         network.connect(1,3);
@@ -74,11 +112,6 @@ public class NetworkTest {
 
     @Test
     public void infect3() {
-        Network network = new Network();
-        network.add(1, "Windows");
-        network.add(2, "Linux");
-        network.add(3, "IOS");
-        network.add(4, "Android");
         network.connect(1,2);
         network.connect(3,2);
         network.connect(1,3);
@@ -92,11 +125,6 @@ public class NetworkTest {
 
     @Test
     public void infect4() {
-        Network network = new Network();
-        network.add(1, "Windows");
-        network.add(2, "Linux");
-        network.add(3, "IOS");
-        network.add(4, "Android");
         network.connect(1,2);
         network.connect(3,2);
         network.connect(1,3);
@@ -111,10 +139,10 @@ public class NetworkTest {
     @Test
     public void infect5() {
         Network network = new Network();
-        Computer a = new Computer(1, OperationSystem.WINDOWS);
-        Computer b = new Computer(2, OperationSystem.LINUX);
-        Computer c = new Computer(3, OperationSystem.IOS);
-        Computer d = new Computer(4, OperationSystem.ANDROID);
+        Computer a = new TestComputer(1, OperationSystem.WINDOWS);
+        Computer b = new TestComputer(2, OperationSystem.LINUX);
+        Computer c = new TestComputer(3, OperationSystem.IOS);
+        Computer d = new TestComputer(4, OperationSystem.ANDROID);
         network.add(a);
         assertEquals(1, network.size());
         network.add(b);

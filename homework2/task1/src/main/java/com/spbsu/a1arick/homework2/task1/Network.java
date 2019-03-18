@@ -8,21 +8,8 @@ import java.util.*;
 public class Network {
 
     private final Map<Integer, Computer> computers = new HashMap<>();
-    private final Map<String, OperationSystem> operationSystemMap = new HashMap<>();
-    private int networkSize = 0;
     private int healthySize = 0;
     private int infectSize = 0;
-
-    /**
-     * constructor Network
-     */
-    public Network() {
-        operationSystemMap.put("Windows", OperationSystem.WINDOWS);
-        operationSystemMap.put("IOS", OperationSystem.IOS);
-        operationSystemMap.put("Android", OperationSystem.ANDROID);
-        operationSystemMap.put("Linux", OperationSystem.LINUX);
-        operationSystemMap.put("Mac_OS", OperationSystem.MAC_OS);
-    }
 
     /**
      * add computer to network
@@ -31,7 +18,6 @@ public class Network {
      */
     public void add(Computer computer) {
         computers.put(computer.getId(), computer);
-        networkSize++;
         healthySize++;
     }
 
@@ -42,10 +28,13 @@ public class Network {
      * @param os operation system computer
      */
     public void add(int id, String os) {
-        if (operationSystemMap.get(os) == null) return;
-        computers.put(id, new Computer(id, operationSystemMap.get(os)));
-        networkSize++;
-        healthySize++;
+        if (os == null || os.isEmpty()) {
+            throw new IllegalArgumentException("Wrong OS name");
+        }
+        if (!computers.containsKey(id)) {
+            computers.put(id, new Computer(id, OperationSystem.valueOf(os.toUpperCase())));
+            healthySize++;
+        }
     }
 
     /**
@@ -108,6 +97,8 @@ public class Network {
         ArrayList<Integer> healthy = new ArrayList<>();
         ArrayList<Integer> infect = new ArrayList<>();
 
+        System.out.println("--------------START-----------------");
+
         for (Map.Entry<Integer, Computer> computerEntry : computers.entrySet()) {
             if (computerEntry.getValue().isInfected()) infect.add(computerEntry.getKey());
             else healthy.add(computerEntry.getKey());
@@ -124,6 +115,7 @@ public class Network {
             System.out.print(id.toString() + ' ');
         }
         System.out.println();
+        System.out.println("--------------END-----------------");
     }
 
     /**
@@ -147,7 +139,7 @@ public class Network {
      * @return size computer in network
      */
     public int size() {
-        return networkSize;
+        return computers.size();
     }
 
     /**
